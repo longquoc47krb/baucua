@@ -1,0 +1,305 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Gesco"; // Provide a name for your font
+  src: url("/fonts/gesco.ttf") format("woff"); // Specify the path to your font file and its format
+  font-weight: normal;
+  font-style: normal;
+}
+* {
+  font-family: "Gesco";
+  --btnPrimary: #eabd68;
+  --btnNewGame: #37d428;
+  --btnOpenBowl: #f59e0b;
+  --btnRollDice: #d50505;
+  --btnAllIn: #0945f9;
+  --dice: #e3e3e3;
+}
+#root {
+  user-select: none;
+  margin: 0 auto;
+  text-align: center;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.circle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+.custom-button {
+  background-image: url("/images/button.png");
+}
+.bowl {
+  width: 350px;
+  height: 350px;
+  z-index: 10;
+  top: 13%;
+}
+.dish {
+  width: 500px;
+  height: 500px;
+}
+.dice {
+  width: 80px;
+  height: 80px;
+  border-radius: 5px;
+  background: linear-gradient(145deg, #cacaca, #f0f0f0);
+  box-shadow: 5px 5px 10px #d3d3d3, -5px -5px 10px #ededed;
+}
+body {
+  overflow: hidden;
+}
+.betting-table {
+  filter: drop-shadow(3px 13px 7px #3b3b3b);
+}
+.abs-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.abs-centerY {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.abs-centerX {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+#dice-1 {
+  top: 35%;
+  left: 15%;
+}
+#dice-2 {
+  left: -15%;
+  top: 60%;
+}
+#dice-3 {
+  right: 5%;
+  top: 60%;
+}
+.shake {
+  animation: shake 0.5s forwards !important;
+}
+.open {
+  animation: open 0.5s forwards;
+}
+.close {
+  animation: close 0.5s forwards;
+}
+@keyframes shake {
+  0% {
+    transform: translate(3px, 3px) rotate(0deg);
+    -webkit-transform: translate(3px, 3px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-3px, -6px) rotate(-1deg);
+    -webkit-transform: translate(-3px, -6px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-9px, 0px) rotate(1deg);
+    -webkit-transform: translate(-9px, 0px) rotate(1deg);
+  }
+  30% {
+    transform: translate(9px, 6px) rotate(0deg);
+    -webkit-transform: translate(9px, 6px) rotate(0deg);
+  }
+  40% {
+    transform: translate(3px, -3px) rotate(1deg);
+    -webkit-transform: translate(3px, -3px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-3px, 6px) rotate(-1deg);
+    -webkit-transform: translate(-3px, 6px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-9px, 9px) rotate(0deg);
+    -webkit-transform: translate(-9px, 9px) rotate(0deg);
+  }
+  70% {
+    transform: translate(9px, 3px) rotate(-1deg);
+    -webkit-transform: translate(9px, 3px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-3px, -3px) rotate(1deg);
+    -webkit-transform: translate(-3px, -3px) rotate(1deg);
+  }
+  90% {
+    transform: translate(3px, 6px) rotate(0deg);
+    -webkit-transform: translate(3px, 6px) rotate(0deg);
+  }
+  100% {
+    transform: translate(3px, 3px) rotate(0deg);
+    -webkit-transform: translate(3px, 3px) rotate(0deg);
+  }
+}
+@keyframes open {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+    -webkit-transform: translate(1px, 1px) rotate(0deg);
+  }
+  100% {
+    transform: translate(100%, 0) rotate(-1deg);
+    -webkit-transform: translate(100%, 0) rotate(-1deg);
+  }
+}
+@keyframes close {
+  0% {
+    transform: translate(100%, 0) rotate(-1deg);
+    -webkit-transform: translate(100%, 0) rotate(-1deg);
+  }
+  100% {
+    transform: translate(1px, 1px) rotate(0deg);
+    -webkit-transform: translate(1px, 1px) rotate(0deg);
+  }
+}
+// 3D Button
+.dice-3d {
+  text-shadow: 0 0.08em 0 rgba(255, 255, 255, 0.5);
+  // display: inline-block;
+  outline: none;
+  cursor: pointer;
+  border: 2px solid;
+  color: #737373;
+  border-color: color(var(--dice) shade(20%)) color(var(--dice) shade(30%))
+    color(var(--dice) shade(40%));
+  background-color: var(--dice);
+  background-image: linear-gradient(var(--dice), color(var(--dice) shade(10%)));
+  box-shadow: 0 0.1em 0.5em rgba(0, 0, 0, 0.4), 0 0.1em 0.2em rgba(0, 0, 0, 0.4),
+    0 -0.1em 0.07em rgba(0, 0, 0, 0.3) inset,
+    0 0.1em 0.07em rgba(255, 255, 255, 0.2) inset;
+
+  &:active {
+    padding: 0.4em 1em 0.4em;
+    margin-top: 0.1em;
+    border-color: color(var(--dice) shade(30%)) color(var(--dice) shade(20%))
+      var(--dice);
+    background-image: linear-gradient(
+      color(var(--dice) shade(5%)),
+      var(--dice)
+    );
+    box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.1) inset,
+      0 0.1em 0.1em rgba(0, 0, 0, 0.2) inset,
+      0.05em 0 0.07em rgba(0, 0, 0, 0.2) inset,
+      -0.05em 0 0.07em rgba(0, 0, 0, 0.2) inset;
+    transition-duration: 10ms;
+  }
+}
+.button-3d {
+  text-shadow: 0 0.08em 0 rgba(255, 255, 255, 0.5);
+  display: inline-block;
+  outline: none;
+  cursor: pointer;
+  border: 2px solid;
+  color: #2e1500;
+  border-color: color(var(--btnPrimary) shade(20%))
+    color(var(--btnPrimary) shade(30%)) color(var(--btnPrimary) shade(40%));
+  background-color: var(--btnPrimary);
+  background-image: linear-gradient(
+    var(--btnPrimary),
+    color(var(--btnPrimary) shade(10%))
+  );
+  &#newGame {
+    color: #072a03;
+    border-color: color(var(--btnNewGame) shade(20%))
+      color(var(--btnNewGame) shade(30%)) color(var(--btnNewGame) shade(40%));
+    background-color: var(--btnNewGame);
+    background-image: linear-gradient(
+      var(--btnNewGame),
+      color(var(--btnNewGame) shade(10%))
+    );
+  }
+  &#openBowl {
+    color: #2e1500;
+    border-color: color(var(--btnOpenBowl) shade(20%))
+      color(var(--btnOpenBowl) shade(30%)) color(var(--btnOpenBowl) shade(40%));
+    background-color: var(--btnOpenBowl);
+    background-image: linear-gradient(
+      var(--btnOpenBowl),
+      color(var(--btnOpenBowl) shade(10%))
+    );
+  }
+  &#rollDice {
+    color: #ffffff;
+    border-color: color(var(--btnRollDice) shade(20%))
+      color(var(--btnRollDice) shade(30%)) color(var(--btnRollDice) shade(40%));
+    background-color: var(--btnRollDice);
+    background-image: linear-gradient(
+      var(--btnRollDice),
+      color(var(--btnRollDice) shade(10%))
+    );
+  }
+  &#tagname {
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    border-color: color(var(--btnRollDice) shade(20%))
+      color(var(--btnRollDice) shade(30%)) color(var(--btnRollDice) shade(40%));
+    background-color: var(--btnRollDice);
+    background-image: linear-gradient(
+      var(--btnRollDice),
+      color(var(--btnRollDice) shade(10%))
+    );
+  }
+  &#allIn {
+    color: #ffffff;
+    border-color: color(var(--btnAllIn) shade(20%))
+      color(var(--btnAllIn) shade(30%)) color(var(--btnAllIn) shade(40%));
+    background-color: var(--btnAllIn);
+    background-image: linear-gradient(
+      var(--btnAllIn),
+      color(var(--btnAllIn) shade(10%))
+    );
+  }
+  box-shadow: 0 0.1em 0.5em rgba(0, 0, 0, 0.1), 0 0.1em 0.2em rgba(0, 0, 0, 0.3),
+    0 -0.1em 0.07em rgba(0, 0, 0, 0.3) inset,
+    0 0.1em 0.07em rgba(255, 255, 255, 0.2) inset;
+  transition: all 100ms;
+}
+
+.button-3d:hover,
+.button-3d:focus {
+  box-shadow: 0 0.1em 0.5em rgba(0, 0, 0, 0.4), 0 0.1em 0.2em rgba(0, 0, 0, 0.4),
+    0 -0.1em 0.07em rgba(0, 0, 0, 0.3) inset,
+    0 0.1em 0.07em rgba(255, 255, 255, 0.2) inset;
+}
+
+.button-3d:active {
+  padding: 0.4em 1em 0.4em;
+  margin-top: 0.1em;
+  border-color: color(var(--btnPrimary) shade(30%))
+    color(var(--btnPrimary) shade(20%)) var(--btnPrimary);
+  background-image: linear-gradient(
+    color(var(--btnPrimary) shade(5%)),
+    var(--btnPrimary)
+  );
+  &#newGame {
+    border-color: color(var(--btnNewGame) shade(30%))
+      color(var(--btnNewGame) shade(20%)) var(--btnNewGame);
+    background-image: linear-gradient(
+      color(var(--btnNewGame) shade(5%)),
+      var(--btnNewGame)
+    );
+  }
+  &#openBowl {
+    border-color: color(var(--btnOpenBowl) shade(30%))
+      color(var(--btnOpenBowl) shade(20%)) var(--btnOpenBowl);
+    background-image: linear-gradient(
+      color(var(--btnOpenBowl) shade(5%)),
+      var(--btnOpenBowl)
+    );
+  }
+  box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.1) inset,
+    0 0.1em 0.1em rgba(0, 0, 0, 0.2) inset,
+    0.05em 0 0.07em rgba(0, 0, 0, 0.2) inset,
+    -0.05em 0 0.07em rgba(0, 0, 0, 0.2) inset;
+  transition-duration: 10ms;
+}

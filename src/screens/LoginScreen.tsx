@@ -1,12 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { IUser } from '../common/interface';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, userListSelector } from '../redux/reducers/player';
 const LoginScreen = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const handleKeyDown = (e) => {
+    const userList = useSelector(userListSelector)
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const handleKeyDown = (e: any) => {
         // Check if the Enter key is pressed (key code 13)
         console.log("Enter")
         if (e.key === 'Enter') {
@@ -16,17 +23,14 @@ const LoginScreen = () => {
     };
     const handleLogin = () => {
         // Retrieve user list from localStorage
-        const userList = JSON.parse(localStorage.getItem('userList')) || [];
         // Find the user with the given username and password
-        const user = userList.find((u) => u.username === username && u.password === password);
+        const user = userList.find((u: IUser) => u.username === username && u.password === password);
+        console.log({ user })
         if (user) {
             // Call the onLogin function with the authenticated user
             localStorage.setItem('currentUser', JSON.stringify(user));
-            // Reload the window
-            window.location.reload();
-
-            // Navigate to the specified path
-            window.location.href = "/"
+            dispatch(login({ username, password }))
+            navigate("/")
         } else {
             // Handle authentication failure
             toast.error('Tên đăng nhập hoặc mật khẩu không đúng.', {

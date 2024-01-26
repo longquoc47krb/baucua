@@ -6,13 +6,14 @@ import { correctPaths, incorrectPaths, playRandomSound } from "../common/sound";
 import BettingTable from "../components/BettingTable";
 import FloatMenu from "../components/FloatMenu";
 import RollDice from "../components/RollDice";
-import { bettedSelector, bonusCalculateCompletedSelector, bonusSelector, calculateTotalBetMoney, compareAndCalculateBonus, endGameSelector, openSelector, resultSelector, rolledSelector, totalAmountReceivedSelector } from '../redux/reducers/game';
+import UserBalance from "../components/UserBalance";
+import { bettedSelector, bonusCalculateCompletedSelector, bonusSelector, calculateTotalBetMoney, compareAndCalculateBonus, endGameSelector, gameHistorySelector, openSelector, resetAll, resultMsgSelector, rolledSelector, saveGameHistory, totalAmountReceivedSelector } from '../redux/reducers/game';
 import { updateCoinAfterRoll } from "../redux/reducers/player";
 import { updateUserInLocalStorage } from "../utils";
-import UserBalance from "../components/UserBalance";
+import { IState } from "../common/interface";
 function GameScreen() {
     const dispatch = useDispatch()
-    const incorrectRef = useRef<HTMLAudioElement | null>(null);
+    const soundEffectRef = useRef<HTMLAudioElement | null>(null);
     const betted = useSelector(bettedSelector);
     const rolled = useSelector(rolledSelector);
     const open = useSelector(openSelector);
@@ -20,25 +21,27 @@ function GameScreen() {
     const totalAmountReceived = useSelector(totalAmountReceivedSelector);
     const bonusCalculateCompleted = useSelector(bonusCalculateCompletedSelector);
     const endGame = useSelector(endGameSelector);
-    const result = useSelector(resultSelector)
-    const user = useSelector(state => state?.player.user)
+    const result = useSelector(resultMsgSelector)
+    const gameHistory = useSelector(gameHistorySelector)
+    const user = useSelector((state: IState) => state?.player.user)
+    const bowlRef = useRef<HTMLImageElement>(null);
     // Compare and calculate result and return bonus for user
     useEffect(() => {
         if (betted && rolled && open) {
             dispatch(compareAndCalculateBonus());
-            dispatch(calculateTotalBetMoney());
+            dispatch(calculateTotalBetMoney())
         }
     }, [betted, rolled, open]);
     useEffect(() => {
-        if (betted && rolled && open && bonus && bonusCalculateCompleted) {
+        if (betted && rolled && open && bonus && bonusCalculateCompleted && endGame) {
             dispatch(updateCoinAfterRoll({ bonus: totalAmountReceived }));
             if (bonus < 0) {
-                playRandomSound(incorrectRef, incorrectPaths)
+                playRandomSound(soundEffectRef, incorrectPaths)
             } else {
-                playRandomSound(incorrectRef, correctPaths)
+                playRandomSound(soundEffectRef, correctPaths)
             }
         }
-    }, [bonusCalculateCompleted]);
+    }, [bonusCalculateCompleted, endGame]);
     // Update user in localStorage
     useEffect(() => {
         if (betted && rolled && open && bonus && bonusCalculateCompleted) {
@@ -94,9 +97,30 @@ function GameScreen() {
         }
 
     }, [endGame, bonus, bonusCalculateCompleted])
+    const saveGameHistoryFunc = () => {
+        const stats = {
+            moneyEarned: bonus > 0 ? bonus : 0,
+            moneyLost: bonus < 0 ? bonus : 0,
+            status: bonus > 0 ? "won" : (bonus < 0 ? "loss" : "draw"),
+            username: user.username
+        };
+        // Add the new history to the list
+        const updatedStats = [...gameHistory, stats];
+        // Update localStorage with the updated user list
+        dispatch(saveGameHistory(updatedStats))
+    };
+    const newGame = () => {
+
+        saveGameHistoryFunc()
+        if (open) {
+            bowlRef?.current?.classList.remove("open");
+            bowlRef?.current?.classList.add("close");
+        }
+        dispatch(resetAll())
+    }
     return (
         <div>
-            <audio ref={incorrectRef} className="hidden" />
+            <audio ref={soundEffectRef} className="hidden" />
             <Toaster position="bottom-center"
                 reverseOrder={true} />
             <UserBalance />
@@ -108,10 +132,10 @@ function GameScreen() {
                     backgroundRepeat: "no-repeat",
                 }}
             >
-                <FloatMenu />
+                <FloatMenu newGame={newGame} />
                 <BettingTable />
-                <RollDice />
-                U</div>
+                <RollDice newGame={newGame} ref={bowlRef} />
+            </div>
         </div>
     )
 }

@@ -2,6 +2,8 @@
 // yourReducer.js
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { formatNumberWithCommas } from '../../utils';
+const gameHistoryString = localStorage.getItem('gameHistory');
+const gameHistory = gameHistoryString ? JSON.parse(gameHistoryString) : []
 export const betMoney = [ // mang luu so tien nguoi dat
     { name: 'bau', coin: 0 },
     { name: 'cua', coin: 0 },
@@ -32,8 +34,10 @@ const gameSlice = createSlice({
         bonus: 0,
         bonusCalculateCompleted: false,
         totalAmountReceived: 0,
-        result: 'No win yet',
+        result: [{ name: "", status: "" }],
+        resultMsg: 'No win yet',
         totalBetMoney: 0,
+        gameHistory
     },
     reducers: {
         // Action to update the bet money for a specific item
@@ -98,6 +102,7 @@ const gameSlice = createSlice({
             state.afterRollDices = afterRollDices;
             state.endGame = false;
             state.bonusCalculateCompleted = false;
+            state.result = [{ name: "", status: "" }]
         },
         // Action to compare and calculate bonus
         compareAndCalculateBonus: (state) => {
@@ -126,11 +131,11 @@ const gameSlice = createSlice({
             state.bonus = bonus;
             state.totalAmountReceived = totalAmoutReceived
             if (bonus > 0) {
-                state.result = `Chúc mừng! Bạn thắng +${formatNumberWithCommas(bonus)} coins!`;
+                state.resultMsg = `Chúc mừng! Bạn thắng +${formatNumberWithCommas(bonus)} coins!`;
             } else if (bonus < 0) {
-                state.result = `Uiii! Bạn thua <strong>${formatNumberWithCommas(totalBetMoney)}</strong> coins!`;
+                state.resultMsg = `Uiii! Bạn thua <strong>${formatNumberWithCommas(totalAmoutReceived - totalBetMoney)}</strong> coins!`;
             } else if (bonus === 0) {
-                state.result = `Bạn hoà!`;
+                state.resultMsg = `Bạn hoà!`;
             }
             state.bonusCalculateCompleted = true;
 
@@ -139,12 +144,16 @@ const gameSlice = createSlice({
             const { betMoney } = state;
             const totalBetMoney = betMoney.reduce((sum, bet) => sum + bet.coin, 0);
             state.totalBetMoney = totalBetMoney;
+        },
+        saveGameHistory: (state, { payload }) => {
+            state.gameHistory = payload;
+            localStorage.setItem('gameHistory', JSON.stringify(payload));
         }
 
     },
 });
 
-export const { updateBetMoney, updateAfterRollDices, setRolled, setBetted, resetAll, updateSpecificBetMoneyCoin, increaseBetMoneyCoin, decreaseBetMoneyCoin, compareAndCalculateBonus, setOpen, calculateTotalBetMoney, setEndGame } = gameSlice.actions;
+export const { updateBetMoney, updateAfterRollDices, setRolled, setBetted, resetAll, updateSpecificBetMoneyCoin, increaseBetMoneyCoin, decreaseBetMoneyCoin, compareAndCalculateBonus, setOpen, calculateTotalBetMoney, setEndGame, saveGameHistory } = gameSlice.actions;
 export const gameSelector = (state: any) => state.game;
 
 export const betMoneySelector = createSelector(
@@ -155,6 +164,10 @@ export const betMoneySelector = createSelector(
 export const rolledSelector = createSelector(
     gameSelector,
     (game) => game.rolled
+);
+export const gameHistorySelector = createSelector(
+    gameSelector,
+    (game) => game.gameHistory
 );
 
 export const afterRollDicesSelector = createSelector(
@@ -194,6 +207,10 @@ export const bonusCalculateCompletedSelector = createSelector(
 export const resultSelector = createSelector(
     gameSelector,
     (game) => game.result
+);
+export const resultMsgSelector = createSelector(
+    gameSelector,
+    (game) => game.resultMsg
 );
 
 export const totalBetMoneySelector = createSelector(

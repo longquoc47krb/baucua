@@ -303,3 +303,88 @@ body {
     -0.05em 0 0.07em rgba(0, 0, 0, 0.2) inset;
   transition-duration: 10ms;
 }
+@keyframes blinkBackground {
+  0% {
+    background-color: rgb(128, 255, 0);
+  }
+  25% {
+    background-color: rgb(137, 255, 78);
+  }
+  50% {
+    background-color: rgb(128, 255, 0);
+  }
+  75% {
+    background-color: rgb(137, 255, 78);
+  }
+  100% {
+    background-color: rgb(128, 255, 0);
+  }
+}
+.blinking {
+  animation: blinkBackground 0.5s infinite;
+}
+.marquee-container {
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.marquee {
+  display: inline-block;
+  animation: marquee 10s linear infinite;
+  width: 200px;
+}
+.rotate {
+  animation: rotate 2.5s linear infinite;
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-200%);
+  }
+}
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.slide-in-left {
+  animation: slide-in-left 1s ease-in forwards;
+}
+.slide-in-up {
+  animation: slide-in-up 1s ease-in forwards;
+}
+@keyframes slide-in-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes slide-in-up {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.music-player {
+  text-shadow: 0 0.08em 0 rgba(255, 255, 255, 0.5);
+  width: 300px;
+  outline: none;
+  border-radius: 0.5rem;
+  background: linear-gradient(
+    45deg,
+    rgb(0, 0, 0) 5.8%,
+    rgb(178, 14, 14) 112.6%
+  );
+  filter: drop-shadow(9px 35px 60px #000000);
+}

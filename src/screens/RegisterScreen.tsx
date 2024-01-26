@@ -2,6 +2,9 @@ import { useState } from "react";
 import { FaEyeSlash, FaEye } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
+import { IUser } from '../common/interface';
+import { useDispatch } from "react-redux";
+import { addUserToList } from "../redux/reducers/player";
 
 const RegisterScreen = () => {
     const [name, setName] = useState('');
@@ -9,17 +12,19 @@ const RegisterScreen = () => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const handleRegister = () => {
         if (username && password && name) {
-            const newUser = {
+            const newUser: IUser = {
                 name,
                 username,
                 password,
-                coin: 2000000,
+                coin: 10000000,
             };
             // Get existing user list from localStorage
-            const userListFromStorage = JSON.parse(localStorage.getItem('userList')) || [];
-            const isUserExist = userListFromStorage.find(user => user.username === newUser.username);
+            const userListString = localStorage.getItem('userList')
+            const userListFromStorage = userListString ? JSON.parse(userListString) : [];
+            const isUserExist = userListFromStorage.find((user: IUser) => user.username === newUser.username);
             if (isUserExist) {
                 toast.error('Người dùng đã tồn tại, vui lòng chọn tên đăng nhập khác.', {
                     style: {
@@ -37,6 +42,7 @@ const RegisterScreen = () => {
             }
             // Add the new user to the list
             const updatedUserList = [...userListFromStorage, newUser];
+            dispatch(addUserToList(newUser))
             // Update localStorage with the updated user list
             localStorage.setItem('userList', JSON.stringify(updatedUserList));
             toast.success('Đăng ký thành công.', {

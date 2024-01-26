@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { diceResource } from "../common/constants";
+import { IUser } from "../common/interface";
 
 export function getRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -8,27 +10,35 @@ export function getRandomColor() {
     }
     return color;
 }
-export function getFirstLetters(str) {
+export function getFirstLetters(str: string) {
     const words = str.split(' '); // Split the string into an array of words
     const firstLetters = words.map(word => word.charAt(0)); // Get the first letter of each word
     return firstLetters.join(''); // Join the first letters into a new string
 }
-export function formatNumberWithCommas(number: number) {
+export function formatNumberWithCommas(number: any) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
-export function convertLargeNumberFormat(value: number) {
-    if (value >= 1e9) {
-        return (value / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
-    } else if (value >= 1e6) {
-        return (value / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
-    } else if (value >= 1e3) {
-        return (value / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
-    } else {
-        return value.toString();
+export function convertLargeNumberFormat(num: number) {
+    const absNum = Math.abs(num);
+    const symbols = ['', 'K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
+    const tier = Math.log10(absNum) / 3 | 0;
+    if (tier === 0) return num;
+
+    const suffix = symbols[tier];
+    const scale = Math.pow(10, tier * 3);
+
+    const scaledNumber = num / scale;
+
+    // Adjust the number of decimal places based on the scale
+    const formattedNumber = scaledNumber.toLocaleString(undefined, { maximumFractionDigits: scaledNumber < 10 ? 2 : 1 });
+
+    if (num < 0) {
+        return -formattedNumber + suffix
     }
+    return formattedNumber + suffix;
 }
-function countOccurrences(inputArray) {
-    return inputArray.reduce((acc, num) => {
+function countOccurrences(inputArray: any[]) {
+    return inputArray.reduce((acc, num: number) => {
         acc[num] = (acc[num] || 0) + 1;
         return acc;
     }, {});
@@ -36,7 +46,6 @@ function countOccurrences(inputArray) {
 export function countOccurrencesAndCompare(inputArray: number[]) {
     // Count occurrences of each number in the input array
     const occurrences = countOccurrences(inputArray);
-    console.log({ inputArray, occurrences })
     // Compare occurrences with the predefined dictionary
     const result = diceResource.map((item, index) => ({
         name: item.label,
@@ -45,12 +54,13 @@ export function countOccurrencesAndCompare(inputArray: number[]) {
 
     return result;
 }
-export const updateUserInLocalStorage = (usernameToUpdate, updatedUserProperties) => {
+export const updateUserInLocalStorage = (usernameToUpdate: string, updatedUserProperties: any) => {
     // Retrieve user list from localStorage
-    const userList = JSON.parse(localStorage.getItem('userList')) || [];
+    const userListString = localStorage.getItem('userList');
+    const userList = userListString ? JSON.parse(userListString) : [];
 
     // Find the index of the user to update
-    const userIndex = userList.findIndex((user) => user.username === usernameToUpdate);
+    const userIndex = userList.findIndex((user: IUser) => user.username === usernameToUpdate);
 
     if (userIndex !== -1) {
         // Create an updated user object

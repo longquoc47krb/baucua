@@ -10,11 +10,11 @@ const BettingLevelDropdown = ({ onChooseBettingLevel, betMoneyItem }: { onChoose
     const [bettingLevel, setBettingLevel] = React.useState<number | any>(betMoneyItem.betLevel);
     const dispatch = useDispatch()
     return (
-        <div className="flex justify-end w-full items-center">
+        <div className="flex justify-end w-full items-center betting-level-dropdown">
             <label htmlFor="bettingLevel" className="text-black">Mức cược:</label>
             <select
                 id="bettingLevel"
-                className="bg-transparent text-black w-min outline-none text-red-600"
+                className="bg-transparent w-min outline-none text-red-600"
                 value={bettingLevel}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                     dispatch(updateBetLevel({ name: betMoneyItem.name, betLevel: Number(e.target.value) }));

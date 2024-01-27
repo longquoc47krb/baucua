@@ -1,18 +1,24 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from "react-redux";
+import { useMediaQuery } from "@uidotdev/usehooks";
+import { useSpring, animated } from '@react-spring/web'
 import { IState } from "../common/interface";
 import { correctPaths, incorrectPaths, playRandomSound } from "../common/sound";
 import BettingTable from "../components/BettingTable";
 import FloatMenu from "../components/FloatMenu";
 import RollDice from "../components/RollDice";
 import UserBalance from "../components/UserBalance";
+import { GiHamburgerMenu } from "react-icons/gi";
 import { bettedSelector, calculateTotalBetMoney, compareAndCalculateDiffAmount, diffAmountCalculateCompletedSelector, diffAmountSelector, endGameSelector, gameHistorySelector, openSelector, resetAll, resultMsgSelector, rolledSelector, saveGameHistory, totalAmountReceivedSelector } from '../redux/reducers/game';
 import { updateCoinAfterRoll } from "../redux/reducers/player";
 import { updateUserInLocalStorage } from "../utils";
 function GameScreen() {
+    const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
     const dispatch = useDispatch()
+    const [openDrawer, setOpenDrawer] = useState(false);
     const soundEffectRef = useRef<HTMLAudioElement | null>(null);
     const betted = useSelector(bettedSelector);
     const rolled = useSelector(rolledSelector);
@@ -118,13 +124,49 @@ function GameScreen() {
         }
         dispatch(resetAll())
     }
+    const menuAnimation = useSpring({
+        from: { x: 0 },
+        to: { x: 100 },
+    })
+    const closeMenuAnimation = useSpring({
+        from: { x: 100 },
+        to: { x: 0 },
+    })
+
+    const overlayAnimation = useSpring({
+        opacity: open ? 1 : 0,
+        pointerEvents: open ? 'auto' : 'none',
+    });
+    if (isSmallDevice) {
+        return (
+            <div>
+                <audio ref={soundEffectRef} className="hidden" />
+                <Toaster position="bottom-center"
+                    reverseOrder={true} />
+                <UserBalance />
+                {/* <GiHamburgerMenu className="text-red-700 text-2xl absolute top-4 right-10 z-10" onClick={() => setOpenDrawer(!openDrawer)} /> */}
+                <div className='game-screen'
+                    style={{
+                        backgroundImage: `url('/images/background.jpg')`,
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        backgroundRepeat: "no-repeat",
+                    }}
+                >
+                    <FloatMenu newGame={newGame} />
+                    <RollDice newGame={newGame} ref={bowlRef} />
+                    <BettingTable />
+                </div>
+            </div>
+        )
+    }
     return (
         <div>
             <audio ref={soundEffectRef} className="hidden" />
             <Toaster position="bottom-center"
                 reverseOrder={true} />
-            <UserBalance />
-            <div className='flex justify-center items-center pt-20 p-2 h-screen relative'
+            {/* <UserBalance /> */}
+            <div className='flex justify-center items-center pt-20 p-2 h-screen relative game-screen'
                 style={{
                     backgroundImage: `url('/images/background.jpg')`,
                     backgroundPosition: "center",

@@ -118,7 +118,7 @@ function BettingZone({ item }: BettingZoneProps) {
         }
     }
     // bg-[#faefdb]
-    const bettingClass = classNames('relative p-4 bg-[#faefdb] border-4 border-[#eabd68] w-[280px] lg:w-[20vw] flex items-center flex-col min-h-[43vh]', renderBackground());
+    const bettingClass = classNames('relative p-4 bg-[#faefdb] border-4 border-[#eabd68] w-[43vh] flex items-center flex-col h-[43vh] betting-zone', renderBackground());
     return (
         <div className={bettingClass}>
             {betMoneyItem.coin > 0 && <FaTrashCan className="absolute button-3d text-white text-4xl h-12 w-12 p-2 cursor-pointer top-0 left-0" onClick={clearBettingStakes} id='rollDice' />}

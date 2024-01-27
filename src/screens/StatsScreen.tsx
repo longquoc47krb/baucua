@@ -132,8 +132,7 @@ function StatsScreen() {
             >
                 <img src="/images/pattern.jpg" className='absolute h-full w-full object-cover top-0 left-0 opacity-15' />
                 <FloatMenu />
-                <div className="flex items-start gap-x-8 relative px-4 py-2 rounded-lg leading-8 w-full pr-[10vw]">
-
+                <div className="flex items-start gap-x-8 relative px-4 py-2 rounded-lg leading-8 w-full pr-[10vw] stats-container">
                     <UserProfileComponent user={user} coin={user.coin} stats={stats} />
                     <div className="flex flex-col items-center flex-1">
                         <p className="text-[#eabd68] mb-4 uppercase text-2xl">Bảng Xếp Hạng</p>

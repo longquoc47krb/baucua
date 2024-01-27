@@ -72,17 +72,17 @@ const RollDice = forwardRef<HTMLImageElement, RollDiceProps>((props, ref) => {
         audioRef.current.play();
     };
     return (
-        <div className='w-[30vw] lg:w-[40vw] h-fit relative'>
+        <div className='roll-dice-container'>
             <audio ref={audioRef}>
                 <source src="/audio/roll-dice.mp3" type="audio/mpeg" />
                 Your browser does not support the audio element.
             </audio>
-            <div className="h-[65vh] w-[40vw] relative">
+            <div className="relative roll-dice-content">
                 <Bowl ref={ref} transparent={false} />
                 <Dish />
                 {dices.map((dice, index) => <Dice index={index + 1} diceKey={dice} />)}
             </div>
-            <div className="flex items-center justify-center gap-x-4">
+            <div className="flex items-center justify-center gap-x-4 roll-dice-buttons">
                 {betted && <button id="openBowl" className=' uppercase button-3d font-semibold text-2xl rounded-md px-4 py-2 z-20 disabled:bg-amber-900 bg-amber-500' onClick={toggleBowl}>{open ? "Úp" : "Lật"}</button>}
                 {!endGame && <button id="rollDice" className=' uppercase button-3d font-semibold text-2xl rounded-md px-4 py-2 z-20 disabled:bg-red-900' onClick={rollDice}>Xóc</button>}
                 {endGame && <button id="newGame" className='uppercase button-3d font-semibold text-2xl rounded-md px-4 py-2 z-20' onClick={props.newGame}>Ván mới</button>}

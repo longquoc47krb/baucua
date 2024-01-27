@@ -34,7 +34,7 @@ function FloatMenu({ newGame }: FloatMenuProps) {
         navigate("/stats")
     }
     return (
-        <div className="absolute right-3 bottom-4 flex-col items-center z-50 justify-between flex">
+        <div className="absolute right-3 bottom-4 flex-col items-center z-50 justify-between flex float-menu-container">
             <div className='flex flex-col items-center'>
                 {currentPathname === "/" ? <button className="flex flex-col items-center cursor-pointer hover:scale-110 transition-transform duration-200" onClick={handleGoToStats}>
                     <IoIosStats className=" bg-red-700 rounded-xl p-2 w-10 h-10" />

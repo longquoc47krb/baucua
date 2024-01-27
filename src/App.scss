@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "styles/mixins";
+@import "styles/game-screen";
+@import "styles/stats-screen";
 @font-face {
   font-family: "Baemin"; // Provide a name for your font
   src: url("/fonts/bmdaniel.ttf") format("woff"); // Specify the path to your font file and its format
@@ -16,6 +19,12 @@
   --btnRollDice: #d50505;
   --btnAllIn: #0945f9;
   --dice: #e3e3e3;
+  @include large-desktop {
+    font-size: 18px;
+  }
+  @include mobile {
+    font-size: 12px;
+  }
 }
 #root {
   user-select: none;
@@ -36,33 +45,8 @@
 .custom-button {
   background-image: url("/images/button.png");
 }
-.bowl {
-  width: 350px;
-  height: 350px;
-  z-index: 10;
-}
-.dish {
-  width: 350px;
-  height: 350px;
-}
-.dice {
-  width: 80px;
-  height: 80px;
-  border-radius: 5px;
-  background: linear-gradient(145deg, #cacaca, #f0f0f0);
-  box-shadow: 5px 5px 10px #d3d3d3, -5px -5px 10px #ededed;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-}
 body {
   overflow: hidden;
-}
-.betting-table {
-  filter: drop-shadow(0px 5px 0px #bdbdbd);
 }
 .abs-center {
   position: absolute;

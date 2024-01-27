@@ -5,7 +5,7 @@ interface BowlProps {
 }
 function Bowl({ transparent }: BowlProps, ref: LegacyRef<HTMLImageElement> | undefined) {
     return (
-        <img src="/images/bowl.png" className={`bowl circle close lg:w-[30rem] lg:h-[30rem]`} ref={ref} style={{ opacity: transparent ? 0.5 : 1 }} />
+        <img src="/images/bowl.png" className={`bowl circle close lg:w-[25rem] lg:h-[25rem]`} ref={ref} style={{ opacity: transparent ? 0.5 : 1 }} />
     )
 }
 

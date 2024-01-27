@@ -77,7 +77,7 @@ const RollDice = forwardRef<HTMLImageElement, RollDiceProps>((props, ref) => {
                 <source src="/audio/roll-dice.mp3" type="audio/mpeg" />
                 Your browser does not support the audio element.
             </audio>
-            <div className="h-[70vh] w-[40vw] relative">
+            <div className="h-[65vh] w-[40vw] relative">
                 <Bowl ref={ref} transparent={false} />
                 <Dish />
                 {dices.map((dice, index) => <Dice index={index + 1} diceKey={dice} />)}

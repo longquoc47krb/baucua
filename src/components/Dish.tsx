@@ -1,7 +1,7 @@
 
 const Dish = () => {
     return (
-        <img src="/images/dish.png" className={`dish circle lg:w-[30rem] lg:h-[30rem]`} />
+        <img src="/images/dish.png" className={`dish circle lg:w-[25rem] lg:h-[25rem]`} />
     )
 }
 

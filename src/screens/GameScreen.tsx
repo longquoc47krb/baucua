@@ -124,7 +124,7 @@ function GameScreen() {
             <Toaster position="bottom-center"
                 reverseOrder={true} />
             <UserBalance />
-            <div className='flex justify-center items-start pt-20 p-2 h-screen relative'
+            <div className='flex justify-center items-center pt-20 p-2 h-screen relative'
                 style={{
                     backgroundImage: `url('/images/background.jpg')`,
                     backgroundPosition: "center",

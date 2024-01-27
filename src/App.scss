@@ -27,6 +27,7 @@
 }
 .circle {
   position: absolute;
+  top: 0;
   left: 0;
   right: 0;
   margin-left: auto;
@@ -39,11 +40,10 @@
   width: 350px;
   height: 350px;
   z-index: 10;
-  top: 13%;
 }
 .dish {
-  width: 500px;
-  height: 500px;
+  width: 350px;
+  height: 350px;
 }
 .dice {
   width: 80px;
@@ -51,6 +51,12 @@
   border-radius: 5px;
   background: linear-gradient(145deg, #cacaca, #f0f0f0);
   box-shadow: 5px 5px 10px #d3d3d3, -5px -5px 10px #ededed;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
 }
 body {
   overflow: hidden;
@@ -75,16 +81,15 @@ body {
   transform: translateX(-50%);
 }
 #dice-1 {
-  top: 35%;
-  left: 15%;
+  top: 10%;
 }
 #dice-2 {
-  left: -15%;
-  top: 60%;
+  left: -30%;
+  top: 30%;
 }
 #dice-3 {
-  right: 5%;
-  top: 60%;
+  right: -30%;
+  top: 30%;
 }
 .shake {
   animation: shake 0.5s forwards !important;

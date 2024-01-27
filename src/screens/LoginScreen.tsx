@@ -25,7 +25,6 @@ const LoginScreen = () => {
         // Retrieve user list from localStorage
         // Find the user with the given username and password
         const user = userList.find((u: IUser) => u.username === username && u.password === password);
-        console.log({ user })
         if (user) {
             // Call the onLogin function with the authenticated user
             localStorage.setItem('currentUser', JSON.stringify(user));
@@ -74,7 +73,10 @@ const LoginScreen = () => {
                             id="username"
                             placeholder="Điền tên đăng nhập dzô"
                             value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            onChange={(e) => {
+                                const username = e.target.value.trim()
+                                setUsername(username)
+                            }}
                         />
                     </div>
                     <div className="mb-4 flex items-start flex-col">

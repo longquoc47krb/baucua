@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { FaEyeSlash, FaEye } from "react-icons/fa6";
-import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
-import { IUser } from '../common/interface';
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { IUser } from '../common/interface';
 import { addUserToList } from "../redux/reducers/player";
+import { lowercaseAndRemoveWhitespace, uppercaseFirstLetter } from "../utils";
 
 const RegisterScreen = () => {
     const [name, setName] = useState('');
@@ -16,8 +17,8 @@ const RegisterScreen = () => {
     const handleRegister = () => {
         if (username && password && name) {
             const newUser: IUser = {
-                name,
-                username,
+                name: uppercaseFirstLetter(name),
+                username: lowercaseAndRemoveWhitespace(username),
                 password,
                 coin: 10000000,
             };
@@ -112,7 +113,10 @@ const RegisterScreen = () => {
                             id="username"
                             placeholder="Nhập tên đăng nhập"
                             value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            onChange={(e) => {
+                                const username = e.target.value.trim()
+                                setUsername(username)
+                            }}
                         />
                     </div>
                     <div className="mb-4 flex items-start flex-col">

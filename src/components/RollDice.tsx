@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { forwardRef, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { bettedSelector, endGameSelector, openSelector, setEndGame, setOpen, setRolled, updateAfterRollDices } from '../redux/reducers/game';
@@ -9,7 +8,7 @@ import Dish from './Dish';
 interface RollDiceProps {
     newGame: () => void;
 }
-const RollDice = forwardRef<HTMLImageElement | any, RollDiceProps>((props, ref) => {
+const RollDice = forwardRef<HTMLImageElement, RollDiceProps>((props, ref) => {
     const [dices, setDices] = useState([0, 0, 0])
     const audioRef = useRef(null);
     const dispatch = useDispatch();
@@ -37,10 +36,12 @@ const RollDice = forwardRef<HTMLImageElement | any, RollDiceProps>((props, ref) 
 
         // Shake animation
         if (open) {
-            ref?.current?.classList.remove("open")
-            ref?.current?.classList.add("close")
-            ref?.current?.classList.add("shake")
-            ref?.current?.classList.remove("close")
+            if (ref) {
+                ref?.current?.classList.remove("open")
+                ref?.current?.classList.add("close")
+                ref?.current?.classList.add("shake")
+                ref?.current?.classList.remove("close")
+            }
             dispatch(setOpen(false));
         } else {
             ref?.current?.classList.remove("close")
@@ -77,14 +78,13 @@ const RollDice = forwardRef<HTMLImageElement | any, RollDiceProps>((props, ref) 
                 Your browser does not support the audio element.
             </audio>
             <div className="h-[450px]">
-                <Bowl ref={ref} transparent={true} />
+                <Bowl ref={ref} transparent={false} />
                 <Dish />
                 {dices.map((dice, index) => <Dice index={index + 1} diceKey={dice} />)}
             </div>
             <div className="flex items-center justify-center gap-x-4">
-                {betted && <button id="openBowl" className=' uppercase button-3d font-semibold text-2xl rounded-md px-4 py-2 z-20 disabled:bg-amber-900 bg-amber-500' onClick={toggleBowl}>{open ? "Đậy" : "Mở "}</button>}
+                {betted && <button id="openBowl" className=' uppercase button-3d font-semibold text-2xl rounded-md px-4 py-2 z-20 disabled:bg-amber-900 bg-amber-500' onClick={toggleBowl}>{open ? "Úp" : "Lật"}</button>}
                 {!endGame && <button id="rollDice" className=' uppercase button-3d font-semibold text-2xl rounded-md px-4 py-2 z-20 disabled:bg-red-900' onClick={rollDice}>Xóc</button>}
-                {/* {endGame && <button className=' uppercase bg-lime-600 text-white font-semibold text-2xl rounded-md px-4 py-2 z-20' onClick={newGame}>Ván mới</button>} */}
                 {endGame && <button id="newGame" className='uppercase button-3d font-semibold text-2xl rounded-md px-4 py-2 z-20' onClick={props.newGame}>Ván mới</button>}
             </div>
         </div>

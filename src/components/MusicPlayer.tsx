@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from 'react';
 import { backgroundSound } from '../common/sound';
 import { MdSkipPrevious, MdSkipNext, MdPlayArrow, MdPause } from "react-icons/md";
@@ -77,14 +78,14 @@ const MusicPlayer = () => {
         }
 
     }, [currentSongIndex]);
-    const musicPlayerClass = classNames("absolute flex items-center gap-x-4 z-[9999] p-4 music-player", handleMusicPlayerPosition())
+    const musicPlayerClass = classNames("absolute flex items-center gap-x-2 z-[9999] p-4 music-player", handleMusicPlayerPosition())
     return (
         <div className={musicPlayerClass} ref={playlistRef}>
             <audio ref={audioRef} onEnded={handleSongEnd}>
                 Your browser does not support the audio tag.
             </audio>
             {/* <IoIosPlay className='inline-block text-red-700 mr-2 ml-0' /><span className="text-red-700 text-left">Đang phát</span> */}
-            <img src={backgroundSound[currentSongIndex].thumbnail} className="w-12 aspect-square rounded-full rotate hover:scale-110 transition-all duration-200" />
+            <img src={backgroundSound[currentSongIndex].thumbnail} className="w-16 aspect-square rounded-full rotate hover:scale-110 transition-all duration-200" />
             <div className="w-full">
                 <div className="marquee-container w-full">
                     <p className="marquee text-[#eabd68] capitalize text-sm">{backgroundSound[currentSongIndex].title}</p></div>

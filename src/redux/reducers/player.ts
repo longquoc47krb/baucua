@@ -42,8 +42,8 @@ const playerSlicer = createSlice({
             state.user.coin -= action.payload;
         },
         updateCoinAfterRoll: (state, { payload }) => {
-            const { bonus } = payload;
-            state.user.coin += bonus
+            const { diffAmount } = payload;
+            state.user.coin += diffAmount
             const updatedUser = { ...state.user };
             const updatedList = state.userList.map((user: IUser) => {
                 if (user.username === updatedUser.username) {

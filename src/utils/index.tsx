@@ -80,3 +80,21 @@ export const updateUserInLocalStorage = (usernameToUpdate: string, updatedUserPr
 
     return false; // Indicate user not found
 };
+export const uppercaseFirstLetter = (string: string) => {
+    // Split the string into an array of words
+    const words = string.split(" ");
+    // Capitalize each word
+    const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+    // Join the capitalized words back into a string
+    const capitalizedString = capitalizedWords.join(' ');
+    console.log({ string, capitalizedString })
+    return capitalizedString;
+}
+export const lowercaseAndRemoveWhitespace = (string: string) => {
+    const lowercaseString = string.toLowerCase();
+
+    // Remove whitespace
+    const stringTrimmed = lowercaseString.replace(/\s+/g, '');
+    console.log({ string, stringTrimmed })
+    return stringTrimmed;
+}

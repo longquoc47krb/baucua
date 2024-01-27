@@ -40,10 +40,15 @@ export interface IGameInitialState {
     betted: boolean;
     open: boolean;
     endGame: boolean;
-    bonus: number;
-    bonusCalculateCompleted: boolean;
+    diffAmount: number;
+    diffAmountCalculateCompleted: boolean;
     totalAmountReceived: number;
     result: Array<{ name: string; status: string }>;
     resultMsg: string;
     totalBetMoney: number;
+}
+export interface IBetMoneyItem {
+    name: string;
+    coin: number;
+    betLevel: number;
 }

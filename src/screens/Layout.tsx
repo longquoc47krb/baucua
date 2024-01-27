@@ -12,10 +12,10 @@ import GameScreen from "./GameScreen";
 import LoginScreen from "./LoginScreen";
 import RegisterScreen from "./RegisterScreen";
 import StatsScreen from "./StatsScreen";
+import PetalFalling from "../components/PetalFalling";
 
 const Layout = () => {
     const token = useSelector((state: IState) => state.player.user);
-    console.log({ token })
     return (
         <>
             <BrowserRouter>
@@ -30,6 +30,7 @@ const Layout = () => {
                     </Route>
                 </Routes>
                 <MusicPlayer />
+                <PetalFalling />
             </BrowserRouter>
         </>
     )

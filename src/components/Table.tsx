@@ -28,7 +28,7 @@ function Table({ data }: { data: any }) {
                 </thead>
                 <tbody>
                     {
-                        data.map((item: any, index: number) => <tr>
+                        data.map((item: any, index: number) => <tr className='ranking-row'>
                             <td className="py-2 px-4 border-b">{renderRankNo(index)}</td>
                             <td className="py-2 px-4 border-b">{item.name}</td>
                             <td className="py-2 px-4 border-b">{item.username}</td>

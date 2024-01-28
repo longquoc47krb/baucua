@@ -10,3 +10,9 @@
     width: 100%;
   }
 }
+.table-container {
+  min-width: 60vw;
+  @include mobile {
+    width: 90vw;
+  }
+}

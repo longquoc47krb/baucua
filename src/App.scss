@@ -23,7 +23,7 @@
     font-size: 18px;
   }
   @include mobile {
-    font-size: 12px;
+    font-size: 16px;
   }
 }
 #root {
@@ -64,19 +64,8 @@ body {
   left: 50%;
   transform: translateX(-50%);
 }
-#dice-1 {
-  top: 10%;
-}
-#dice-2 {
-  left: -30%;
-  top: 30%;
-}
-#dice-3 {
-  right: -30%;
-  top: 30%;
-}
 .shake {
-  animation: shake 0.5s forwards !important;
+  animation: shake 0.6s forwards !important;
 }
 .open {
   animation: open 0.5s forwards;
@@ -362,12 +351,23 @@ body {
 .slide-in-left {
   animation: slide-in-left 1s ease-in forwards;
 }
+.slide-in-right {
+  animation: slide-in-right 1s ease-in forwards;
+}
 .slide-in-up {
   animation: slide-in-up 1s ease-in forwards;
 }
 @keyframes slide-in-left {
   0% {
     transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes slide-in-right {
+  0% {
+    transform: translateX(-200%);
   }
   100% {
     transform: translateX(0);
@@ -394,6 +394,11 @@ body {
     rgb(178, 14, 14) 112.6%
   );
   filter: drop-shadow(0px 5px 0px #2b0000);
+}
+.music-player {
+  @include mobile {
+    display: none;
+  }
 }
 .petal {
   width: 2rem;
@@ -537,5 +542,12 @@ body {
 
   &::after {
     transform: translate(4px, 4px);
+  }
+}
+.auth-container {
+  @include mobile {
+    width: 100vw;
+    margin: 1rem;
+    margin-right: 1rem;
   }
 }

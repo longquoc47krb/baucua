@@ -1,11 +1,16 @@
+$dish-size: 30vw;
+$dish-mobile-size: 35dvh;
+$roll-dice-width: 40vw;
+$roll-dice-mobile-width: 100vw;
+$betting-zone-width: calc((100vw - $roll-dice-width) / 3 - 3px);
 .roll-dice-container {
 }
 .roll-dice-content {
-  width: 30vw;
-  height: 30vw;
+  width: $roll-dice-width;
+  height: $dish-size;
   @include mobile {
-    width: 100vw;
-    height: 40dvh;
+    width: $roll-dice-mobile-width;
+    height: $dish-mobile-size;
   }
 }
 .roll-dice-buttons {
@@ -15,34 +20,67 @@
   }
 }
 .bowl {
-  width: 350px;
-  height: 350px;
+  width: $dish-size;
+  height: $dish-size;
   z-index: 10;
   @include mobile {
-    width: 300px;
-    height: 300px;
+    width: $dish-mobile-size;
+    height: $dish-mobile-size;
   }
 }
 .dish {
-  width: 350px;
-  height: 350px;
+  width: $dish-size;
+  height: $dish-size;
+  filter: drop-shadow(6px 28px 23px #000000);
   @include mobile {
-    width: 300px;
-    height: 300px;
+    width: $dish-mobile-size;
+    height: $dish-mobile-size;
   }
 }
 .dice {
-  width: 80px;
-  height: 80px;
+  width: calc($dish-size / 4);
+  height: calc($dish-size / 4);
   border-radius: 5px;
   background: linear-gradient(145deg, #cacaca, #f0f0f0);
   box-shadow: 5px 5px 10px #d3d3d3, -5px -5px 10px #ededed;
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
   margin-left: auto;
   margin-right: auto;
+  padding: 0.5rem;
+  @include mobile {
+    width: calc($dish-mobile-size / 4);
+    height: calc($dish-mobile-size / 4);
+  }
+  &#dice-1 {
+    top: calc($dish-size / 4);
+    left: 0;
+    right: 0;
+    @include mobile {
+      top: calc($dish-mobile-size / 4);
+    }
+  }
+  &#dice-2 {
+    left: calc($dish-size / 4);
+    bottom: calc($dish-size / 4);
+    @include mobile {
+      left: calc(
+        (($roll-dice-mobile-width - $dish-mobile-size) / 2) +
+          ($dish-mobile-size / 6)
+      );
+      bottom: calc($dish-mobile-size / 4);
+    }
+  }
+  &#dice-3 {
+    right: calc($dish-size / 4);
+    bottom: calc($dish-size / 4);
+    @include mobile {
+      right: calc(
+        (($roll-dice-mobile-width - $dish-mobile-size) / 2) +
+          ($dish-mobile-size / 6)
+      );
+      bottom: calc($dish-mobile-size / 4);
+    }
+  }
 }
 .betting-table {
   display: grid;
@@ -51,79 +89,77 @@
   filter: drop-shadow(0px 5px 0px #bdbdbd);
   @include mobile {
     margin-top: 1rem;
+    justify-content: center;
   }
 }
 .betting-zone {
-  @include large-desktop {
-    img {
-      width: 250px;
-      height: 250px;
-    }
+  position: relative;
+  padding: 1rem;
+  border: 4px solid #eabd68;
+  width: $betting-zone-width;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: height 5s ease-in-out;
+  img {
+    width: calc($betting-zone-width / 2);
+    aspect-ratio: 1 / 1;
   }
   @include mobile {
     width: calc(100vw / 3);
-    height: auto;
+    padding: 5px;
+    border-width: 2px;
     img {
       width: 50px;
       height: 50px;
     }
+    .betLevel-label,
+    .betLevel-select {
+      font-size: 10px;
+    }
+    .btn-minus-plus {
+      padding: 5px;
+    }
   }
-}
-.betting-level-dropdown {
 }
 .game-screen {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 1.5rem;
   position: relative;
+  @include large-desktop {
+    justify-content: center;
+  }
   @include mobile {
+    display: flex;
     height: 100dvh;
     flex-direction: column;
     justify-content: flex-end;
     padding: 0;
+    margin: 0;
+    overflow: hidden;
+  }
+}
+.user-balance {
+  width: fit-content;
+  font-size: 1.5rem;
+  @include large-desktop {
+  }
+  @include mobile {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 50;
   }
 }
 .float-menu-container {
   @include mobile {
     top: 1rem;
     right: 0.75rem;
+    height: fit-content;
   }
-}
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-}
-
-.drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 80%;
-  max-width: 300px;
-  background-color: #333;
-  padding: 20px;
-  color: white;
-  z-index: 2;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-li {
-  padding: 10px;
-  cursor: pointer;
-}
-
-button {
-  font-size: 24px;
-  cursor: pointer;
 }

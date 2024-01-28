@@ -59,7 +59,7 @@ const LoginScreen = () => {
         }}>
             <Toaster position="bottom-center"
                 reverseOrder={true} />
-            <div className="shadow-md rounded-md w-96 overflow-hidden relative bg-red-700 min-w-[40vw]">
+            <div className="shadow-md rounded-md w-96 overflow-hidden relative bg-red-700 min-w-[40vw] auth-container">
                 <img src="/images/pattern.jpg" className='absolute h-full object-cover top-0 left-0 opacity-15' />
                 <h2 className="text-2xl font-semibold mb-6 relative pt-8 text-amber-200">Đăng nhập</h2>
                 <form className='p-8 relative'>

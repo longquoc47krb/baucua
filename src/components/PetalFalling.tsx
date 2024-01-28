@@ -1,4 +1,8 @@
+import { useMediaQuery } from "@uidotdev/usehooks";
+import classNames from "classnames";
+
 function PetalFalling() {
+    const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
     const petalPlayers = [];
     function animatePetals() {
         const petals = document.querySelectorAll('.petal');
@@ -23,8 +27,9 @@ function PetalFalling() {
         }
     }
     animatePetals();
+    const petalsClass = classNames("bg-red-500 w-screen", isSmallDevice ? "hidden" : "")
     return (
-        <div id="petals-container" className='bg-red-500'>
+        <div id="petals-container" className={petalsClass}>
             {[...Array(25)].map(() => <div className="petal"></div>)}
         </div>
     )

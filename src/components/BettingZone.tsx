@@ -39,11 +39,13 @@ function BettingZone({ item }: BettingZoneProps) {
         }
     };
     const increaseBettingStakes = () => {
-        dispatch(increaseBetMoneyCoin({
-            name: betMoneyItem.name,
-            amount: bettingLevel
-        }))
-        if (!endGame) {
+        if (userBalance > 0) {
+            dispatch(increaseBetMoneyCoin({
+                name: betMoneyItem.name,
+                amount: bettingLevel
+            }))
+        }
+        if (!endGame && userBalance > 0) {
             dispatch(subtractCoins(bettingLevel))
         }
     };
@@ -117,28 +119,29 @@ function BettingZone({ item }: BettingZoneProps) {
             return "";
         }
     }
+    console.log({ betMoneyItem })
     // bg-[#faefdb]
-    const bettingClass = classNames('relative p-4 bg-[#faefdb] border-4 border-[#eabd68] w-[43vh] flex items-center flex-col h-[43vh] betting-zone', renderBackground());
+    const bettingClass = classNames('bg-[#faefdb] betting-zone', renderBackground());
     return (
         <div className={bettingClass}>
             {betMoneyItem.coin > 0 && <FaTrashCan className="absolute button-3d text-white text-4xl h-12 w-12 p-2 cursor-pointer top-0 left-0" onClick={clearBettingStakes} id='rollDice' />}
             <BettingLevelDropdown onChooseBettingLevel={setBettingLevel} betMoneyItem={betMoneyItem} />
             {/* <p id="rollDice" className='bg-red-600 p-3 text-sm rounded-full absolute top-3 right-3 button-3d' onClick={handleChooseBettingLevel}>{convertLargeNumberFormat(bettingLevel)}</p> */}
-            <img src={item.path} className='w-[20vh] h-[20vh] cursor-pointer' />
+            <img src={item.path} className='cursor-pointer' />
             {
                 rolled ? <div className='px-2 w-full'>
                     <div className='flex items-center gap-x-4 justify-center text-gray-900 w-full'>
-                        <button className='px-4 py-2 rounded-md button-3d disabled:bg-[#aa8136] flex-1 disabled:cursor-not-allowed flex justify-center' onClick={decreaseBettingStakes} disabled={endGame}><FaMinus /></button>
+                        <button className='px-4 py-2 rounded-md button-3d disabled:bg-[#aa8136] flex-1 disabled:cursor-not-allowed flex justify-center btn-minus-plus' onClick={decreaseBettingStakes} disabled={endGame}><FaMinus className='text-xs md:text-base' /></button>
                         <p className='flex-1'>{convertLargeNumberFormat(betMoneyItem?.coin)}</p>
-                        <button className='px-4 py-2 rounded-md button-3d flex-1 disabled:bg-[#aa8136] disabled:cursor-not-allowed flex justify-center' onClick={increaseBettingStakes} disabled={endGame}><FaPlus /></button>
+                        <button className='px-4 py-2 rounded-md button-3d flex-1 disabled:bg-[#aa8136] disabled:cursor-not-allowed flex justify-center btn-minus-plus' onClick={increaseBettingStakes} disabled={endGame}><FaPlus className='text-xs md:text-base' /></button>
                     </div>
                     <div className='flex items-center gap-x-4 justify-center mt-2 text-gray-900 w-full'>
-                        <button id="rollDice" className='p-2 rounded-md button-3d flex-1 disabled:bg-[#aa8136] disabled:cursor-not-allowed flex justify-center text-sm button-3d uppercase' onClick={handleAllIn} disabled={endGame}>Tất tay</button>
+                        <button id="rollDice" className='p-1 md:p-2 rounded-md button-3d flex-1 disabled:bg-[#aa8136] disabled:cursor-not-allowed flex justify-center text-sm button-3d uppercase' onClick={handleAllIn} disabled={endGame}>Tất tay</button>
                     </div>
 
 
                 </div>
-                    : <p className="text-gray-900 italic px-2 py-2">Rung xí ngầu trước khi đặt cược</p>
+                    : <p className="text-gray-900 italic px-2 py-2 text-xs md:text-base lg:text-lg">Rung xí ngầu trước khi đặt cược</p>
             }
         </div >
     )

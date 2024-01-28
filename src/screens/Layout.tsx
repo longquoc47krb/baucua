@@ -29,7 +29,7 @@ const Layout = () => {
                         <Route path={"/stats"} element={<StatsScreen />} />
                     </Route>
                 </Routes>
-                {/* <MusicPlayer /> */}
+                <MusicPlayer />
                 <PetalFalling />
             </BrowserRouter>
         </>

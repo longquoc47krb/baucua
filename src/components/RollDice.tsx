@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { forwardRef, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { bettedSelector, endGameSelector, openSelector, setEndGame, setOpen, setRolled, updateAfterRollDices } from '../redux/reducers/game';
@@ -9,8 +10,9 @@ interface RollDiceProps {
     newGame: () => void;
 }
 const RollDice = forwardRef<HTMLImageElement, RollDiceProps>((props, ref) => {
-    const [dices, setDices] = useState([0, 0, 0])
+    const [dices, setDices] = useState([0, 1, 2])
     const audioRef = useRef(null);
+    const dishRef = useRef<HTMLImageElement>(null)
     const dispatch = useDispatch();
     const open = useSelector(openSelector);
     const betted = useSelector(bettedSelector);
@@ -40,12 +42,14 @@ const RollDice = forwardRef<HTMLImageElement, RollDiceProps>((props, ref) => {
                 ref?.current?.classList.remove("open")
                 ref?.current?.classList.add("close")
                 ref?.current?.classList.add("shake")
+                dishRef.current?.classList.add("shake");
                 ref?.current?.classList.remove("close")
             }
             dispatch(setOpen(false));
         } else {
             ref?.current?.classList.remove("close")
-            ref?.current?.classList.add("shake")
+            ref?.current?.classList.add("shake");
+            dishRef.current?.classList.add("shake");
         }
         countOccurrencesAndCompare([dice1, dice2, dice3]).map((item) => dispatch(updateAfterRollDices({
             name: item.name,
@@ -53,7 +57,7 @@ const RollDice = forwardRef<HTMLImageElement, RollDiceProps>((props, ref) => {
         })))
 
         // dispatch(updateAfterRollDices())
-        setTimeout(() => ref?.current?.classList.remove("shake"), 500);
+        setTimeout(() => { ref?.current?.classList.remove("shake"); dishRef.current?.classList.remove("shake"); }, 1000);
     };
 
     const toggleBowl = () => {
@@ -79,7 +83,7 @@ const RollDice = forwardRef<HTMLImageElement, RollDiceProps>((props, ref) => {
             </audio>
             <div className="relative roll-dice-content">
                 <Bowl ref={ref} transparent={false} />
-                <Dish />
+                <Dish ref={dishRef} />
                 {dices.map((dice, index) => <Dice index={index + 1} diceKey={dice} />)}
             </div>
             <div className="flex items-center justify-center gap-x-4 roll-dice-buttons">

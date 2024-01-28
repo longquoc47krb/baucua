@@ -121,7 +121,7 @@ function StatsScreen() {
             {/* <audio ref={incorrectRef} className="hidden" /> */}
             <Toaster position="bottom-center"
                 reverseOrder={true} />
-            <div className='flex flex-col items-center pt-6 p-2 h-screen relative'
+            <div className='flex flex-col items-center pt-6 p-2 h-screen relative overflow-hidden'
                 style={{
                     // backgroundImage: `url('/images/background.jpg')`,
                     backgroundColor: "#d50505",

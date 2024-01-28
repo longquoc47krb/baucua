@@ -13,28 +13,28 @@ function Table({ data }: { data: any }) {
         }
     }
     return (
-        <div className="min-w-[60vw] mx-auto">
+        <div className="table-container mx-auto overflow-x-auto rounded-md">
 
-            <table className="min-w-full bg-black/50 border border-gray-300 rounded-md overflow-hidden">
+            <table className="bg-black/50 overflow-hidden rounded-md w-full">
                 <thead className="bg-[#eabd68] text-[#4f390f]">
                     <tr>
                         <th className="py-2 px-4 border-b">#</th>
-                        <th className="py-2 px-4 border-b">Tên</th>
-                        <th className="py-2 px-4 border-b">Tên đăng nhập</th>
-                        <th className="py-2 px-4 border-b">Tỉ lệ thắng</th>
-                        <th className="py-2 px-4 border-b">Chuỗi thắng</th>
-                        <th className="py-2 px-4 border-b">Tổng tài sản</th>
+                        <th className="py-2 px-4 border-b whitespace-nowrap">Tên</th>
+                        <th className="py-2 px-4 border-b whitespace-nowrap">Tên đăng nhập</th>
+                        <th className="py-2 px-4 border-b whitespace-nowrap">Tỉ lệ thắng</th>
+                        <th className="py-2 px-4 border-b whitespace-nowrap">Chuỗi thắng</th>
+                        <th className="py-2 px-4 border-b whitespace-nowrap">Tổng tài sản</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
                         data.map((item: any, index: number) => <tr className='ranking-row'>
-                            <td className="py-2 px-4 border-b">{renderRankNo(index)}</td>
-                            <td className="py-2 px-4 border-b">{item.name}</td>
-                            <td className="py-2 px-4 border-b">{item.username}</td>
-                            <td className="py-2 px-4 border-b">{item.wonRate}%</td>
-                            <td className="py-2 px-4 border-b">{item.wonStreak}</td>
-                            <td className="py-2 px-4 border-b">{convertLargeNumberFormat(item.balance)}</td>
+                            <td className="py-2 px-4 border-b whitespace-nowrap">{renderRankNo(index)}</td>
+                            <td className="py-2 px-4 border-b whitespace-nowrap">{item.name}</td>
+                            <td className="py-2 px-4 border-b whitespace-nowrap">{item.username}</td>
+                            <td className="py-2 px-4 border-b whitespace-nowrap">{item.wonRate}%</td>
+                            <td className="py-2 px-4 border-b whitespace-nowrap">{item.wonStreak}</td>
+                            <td className="py-2 px-4 border-b whitespace-nowrap">{convertLargeNumberFormat(item.balance)}</td>
                         </tr>)
                     }
 

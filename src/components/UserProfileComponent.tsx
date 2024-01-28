@@ -59,7 +59,9 @@ const UserProfileComponent = ({ user, coin, stats }: UserProfileProps) => {
     return (
         <div className="flex items-start flex-col p-4 rounded-lg flex-1 leading-8 user-profile">
             <p className="text-[#eabd68] mb-2 uppercase text-2xl">Thành tích cá nhân</p>
-            <p className='pr-2 uppercase text-4xl'>{user.name}</p>
+            <p className='pr-2 uppercase text-4xl whitespace-nowrap overflow-x-auto w-full overflow-y-hidden md:overflow-hidden text-left'>
+                {user.name}
+            </p>
             <div className="flex items-center gap-x-3">
                 <div className="flex items-center gap-x-4">
                     <FaCoins className="text-[#eabd68]" />

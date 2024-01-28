@@ -4,19 +4,26 @@ import { backgroundSound } from '../common/sound';
 import { MdSkipPrevious, MdSkipNext, MdPlayArrow, MdPause } from "react-icons/md";
 import classNames from 'classnames';
 import { useLocation } from 'react-router-dom';
+import { useMediaQuery } from '@uidotdev/usehooks';
 
 const MusicPlayer = () => {
+    const mobileDevice = useMediaQuery("only screen and (max-width : 768px)");
+    const desktopDevice = useMediaQuery("only screen and (min-width: 1024px) and (max-width: 1439px)");
+    const largeDesktopDevice = useMediaQuery("only screen and (min-width: 1440px)");
+    // console.log({ mobileDevice, desktopDevice, largeDesktopDevice })
     const [isPlaying, setIsPlaying] = useState(false);
     const playlistRef = useRef<HTMLDivElement>(null)
     const [currentSongIndex, setCurrentSongIndex] = useState(Math.floor(Math.random() * backgroundSound.length));
     const audioRef = useRef(null);
     const location = useLocation()
     const pathname = location.pathname;
-    const TOP_RIGHT = pathname === "/" || pathname === "/sign-in" || pathname === "/sign-up";
+    const TOP_RIGHT = !mobileDevice && pathname === "/" || pathname === "/sign-in" || pathname === "/sign-up";
+    const TOP_LEFT = largeDesktopDevice && pathname === "/" || pathname === "/sign-in" || pathname === "/sign-up";
     const handleMusicPlayerPosition = () => {
         if (TOP_RIGHT) {
-            return "top-4 -right-2"
-        } else {
+            return "top-6 -right-2"
+        }
+        else {
             return "bottom-4 left-6"
         }
     }
@@ -73,8 +80,6 @@ const MusicPlayer = () => {
             audioRef.current.load();
             audioRef.current.play();
             setIsPlaying(true)
-
-
         }
 
     }, [currentSongIndex]);

@@ -28,6 +28,11 @@ function GameScreen() {
     const gameHistory = useSelector(gameHistorySelector)
     const user = useSelector((state: IState) => state?.player.user)
     const bowlRef = useRef<HTMLImageElement>(null);
+    // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+    let vh = window.innerHeight * 0.01;
+    // Then we set the value in the --vh custom property to the root of the document
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+    console.log({ vh })
     // Compare and calculate result and return diffAmount for user
     useEffect(() => {
         if (betted && rolled && open) {
@@ -149,8 +154,7 @@ function GameScreen() {
             <audio ref={soundEffectRef} className="hidden" />
             <Toaster position="bottom-center"
                 reverseOrder={true} />
-            {/* <UserBalance /> */}
-            <div className='flex justify-center items-center pt-20 p-2 h-screen relative game-screen'
+            <div className='p-2 h-screen relative game-screen'
                 style={{
                     backgroundImage: `url('/images/background.jpg')`,
                     backgroundPosition: "center",
@@ -158,9 +162,12 @@ function GameScreen() {
                     backgroundRepeat: "no-repeat",
                 }}
             >
+                <UserBalance />
                 <FloatMenu newGame={newGame} />
-                <BettingTable />
-                <RollDice newGame={newGame} ref={bowlRef} />
+                <div className="flex items-center justify-between mt-2">
+                    <BettingTable />
+                    <RollDice newGame={newGame} ref={bowlRef} />
+                </div>
             </div>
         </div>
     )

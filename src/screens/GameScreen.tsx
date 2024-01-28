@@ -28,12 +28,6 @@ function GameScreen() {
     const gameHistory = useSelector(gameHistorySelector)
     const user = useSelector((state: IState) => state?.player.user)
     const bowlRef = useRef<HTMLImageElement>(null);
-    // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
-    let vh = window.innerHeight * 0.01;
-    // Then we set the value in the --vh custom property to the root of the document
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-    console.log({ vh })
-    // Compare and calculate result and return diffAmount for user
     useEffect(() => {
         if (betted && rolled && open) {
             dispatch(compareAndCalculateDiffAmount());
@@ -149,6 +143,9 @@ function GameScreen() {
             </div>
         )
     }
+    const client_email = import.meta.env.VITE_CLIENT_EMAIL;
+    const private_key = import.meta.env.VITE_PRIVATE_KEY;
+    const sheet_id = import.meta.env.VITE_SHEET_ID;
     return (
         <div>
             <audio ref={soundEffectRef} className="hidden" />

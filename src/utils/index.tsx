@@ -87,7 +87,6 @@ export const uppercaseFirstLetter = (string: string) => {
     const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
     // Join the capitalized words back into a string
     const capitalizedString = capitalizedWords.join(' ');
-    console.log({ string, capitalizedString })
     return capitalizedString;
 }
 export const lowercaseAndRemoveWhitespace = (string: string) => {
@@ -95,6 +94,5 @@ export const lowercaseAndRemoveWhitespace = (string: string) => {
 
     // Remove whitespace
     const stringTrimmed = lowercaseString.replace(/\s+/g, '');
-    console.log({ string, stringTrimmed })
     return stringTrimmed;
 }

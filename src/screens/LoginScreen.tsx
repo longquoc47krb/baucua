@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { IUser } from '../common/interface';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, userListSelector } from '../redux/reducers/player';
+import { lowercaseAndRemoveWhitespace } from '../utils';
 const LoginScreen = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -24,7 +25,7 @@ const LoginScreen = () => {
     const handleLogin = () => {
         // Retrieve user list from localStorage
         // Find the user with the given username and password
-        const user = userList.find((u: IUser) => u.username === username && u.password === password);
+        const user = userList.find((u: IUser) => u.username === lowercaseAndRemoveWhitespace(username) && u.password === password);
         if (user) {
             // Call the onLogin function with the authenticated user
             localStorage.setItem('currentUser', JSON.stringify(user));

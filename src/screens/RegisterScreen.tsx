@@ -6,7 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { IUser } from '../common/interface';
 import { addUserToList } from "../redux/reducers/player";
 import { lowercaseAndRemoveWhitespace, uppercaseFirstLetter } from "../utils";
-
+// import { GoogleSpreadsheet } from "google-spreadsheet";
+// import { JWT } from 'google-auth-library';
 const RegisterScreen = () => {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');

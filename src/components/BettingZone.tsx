@@ -119,7 +119,6 @@ function BettingZone({ item }: BettingZoneProps) {
             return "";
         }
     }
-    console.log({ betMoneyItem })
     // bg-[#faefdb]
     const bettingClass = classNames('bg-[#faefdb] betting-zone', renderBackground());
     return (

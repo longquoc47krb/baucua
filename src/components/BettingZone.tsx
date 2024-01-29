@@ -176,7 +176,7 @@ function BettingZone({ item }: BettingZoneProps) {
 
     return (
         <div className={bettingClass}>
-            {betMoneyItem.coin > 0 && <FaTrashCan className="absolute button-3d md:text-white text-red-500 text-sm w-10 h-10 pr-3 pb-3 md:text-3xl md:w-14 md:h-14 md:p-2 cursor-pointer top-0 left-0" onClick={clearBettingStakes} id='rollDice' />}
+            {betMoneyItem.coin > 0 && <FaTrashCan className="absolute button-3d md:text-white text-red-500 text-sm w-10 h-10 p-3 md:text-3xl md:w-14 md:h-14 md:p-2 cursor-pointer top-0 left-0" onClick={clearBettingStakes} id='rollDice' />}
             <BettingLevelDropdown onChooseBettingLevel={setBettingLevel} betMoneyItem={betMoneyItem} />
             {/* <p id="rollDice" className='bg-red-600 p-3 text-sm rounded-full absolute top-3 right-3 button-3d' onClick={handleChooseBettingLevel}>{convertLargeNumberFormat(bettingLevel)}</p> */}
             <img src={item.path} className='cursor-pointer' />

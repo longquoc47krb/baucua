@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { updateDoc } from "firebase/firestore";
 import { diceResource } from "../common/constants";
 import { IGameHistory, IUser } from "../common/interface";
-import { saveGameHistory } from "../redux/reducers/game";
+import { database } from "../config/firebase";
+import { saveGameHistory } from "../api/firebaseApi";
 
 export function getRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -69,7 +71,7 @@ export const updateUserInLocalStorage = (usernameToUpdate: string, updatedUserPr
             ...userList[userIndex],  // Keep existing properties
             ...updatedUserProperties, // Update the specified properties
         };
-
+        // await updateDoc(doc(database, "users", todo.id), { Subject: Subject });
         // Update the user in the user list
         userList[userIndex] = updatedUser;
 
@@ -117,17 +119,13 @@ export const getWinStreakAndMoneyEarned = (history: IGameHistory[], username: st
 
     return { currentWinStreak, maxWinStreak, moneyEarnedWinStreakPeriod };
 };
-export const saveGameHistoryToDB = (diffAmount: number, username: string, gameHistory: string, dispatch: any) => {
-    const stats = {
+export const saveGameHistoryToDB = async (diffAmount: number, username: string) => {
+    const stats: IGameHistory = {
         moneyEarned: diffAmount > 0 ? diffAmount : 0,
         moneyLost: diffAmount < 0 ? diffAmount : 0,
         status: diffAmount > 0 ? "won" : diffAmount < 0 ? "loss" : "draw",
         username,
     };
 
-    // Add the new history to the list
-    const updatedStats = [...gameHistory, stats];
-
-    // Update localStorage with the updated user list
-    dispatch(saveGameHistory(updatedStats));
+    await saveGameHistory(stats);
 };

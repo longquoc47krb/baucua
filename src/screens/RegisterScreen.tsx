@@ -3,11 +3,10 @@ import toast, { Toaster } from 'react-hot-toast';
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { registerAccount } from "../api/firebaseApi";
 import { IUser } from '../common/interface';
 import { addUserToList } from "../redux/reducers/player";
 import { lowercaseAndRemoveWhitespace, uppercaseFirstLetter } from "../utils";
-// import { GoogleSpreadsheet } from "google-spreadsheet";
-// import { JWT } from 'google-auth-library';
 const RegisterScreen = () => {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
@@ -15,7 +14,7 @@ const RegisterScreen = () => {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const handleRegister = () => {
+    const handleRegister = async () => {
         if (username && password && name) {
             const newUser: IUser = {
                 name: uppercaseFirstLetter(name),
@@ -42,11 +41,12 @@ const RegisterScreen = () => {
                 });
                 return;
             }
-            // Add the new user to the list
-            const updatedUserList = [...userListFromStorage, newUser];
+            await registerAccount(newUser);
             dispatch(addUserToList(newUser))
+            // Add the new user to the list
+            // const updatedUserList = [...userListFromStorage, newUser];
             // Update localStorage with the updated user list
-            localStorage.setItem('userList', JSON.stringify(updatedUserList));
+            // localStorage.setItem('userList', JSON.stringify(updatedUserList));
             toast.success('Đăng ký thành công.', {
                 style: {
                     border: '1px solid #eabd68',
@@ -152,7 +152,7 @@ const RegisterScreen = () => {
                 </form>
                 <p className='mb-8 relative'>Đã có tài khoản? <Link className='text-amber-300' to={"/sign-in"}>Đăng nhập ngay</Link></p>
             </div>
-        </div>
+        </div >
     );
 };
 

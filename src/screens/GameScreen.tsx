@@ -1,18 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useMediaQuery } from "@uidotdev/usehooks";
-import { useEffect, useRef, useState } from "react";
+import { doc, updateDoc } from "firebase/firestore";
+import { useEffect, useRef } from "react";
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from "react-redux";
-import { IState } from "../common/interface";
+import { IState, IUser } from "../common/interface";
 import { correctPaths, incorrectPaths, playRandomSound } from "../common/sound";
 import BettingTable from "../components/BettingTable";
 import FloatMenu from "../components/FloatMenu";
 import RollDice from "../components/RollDice";
 import UserBalance from "../components/UserBalance";
-import { bettedSelector, calculateTotalBetMoney, compareAndCalculateDiffAmount, diffAmountCalculateCompletedSelector, diffAmountSelector, endGameSelector, gameHistorySelector, openSelector, resetAll, resultMsgSelector, rolledSelector, totalAmountReceivedSelector } from '../redux/reducers/game';
+import { useAuthContext } from "../config/context/useAuthContext";
+import { database } from "../config/firebase";
+import { bettedSelector, calculateTotalBetMoney, compareAndCalculateDiffAmount, diffAmountCalculateCompletedSelector, diffAmountSelector, endGameSelector, openSelector, resetAll, resultMsgSelector, rolledSelector, totalAmountReceivedSelector } from '../redux/reducers/game';
 import { updateCoinAfterRoll } from "../redux/reducers/player";
-import { saveGameHistoryToDB, updateUserInLocalStorage } from "../utils";
+import { saveGameHistoryToDB } from "../utils";
 function GameScreen() {
     const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
     const dispatch = useDispatch()
@@ -25,11 +29,9 @@ function GameScreen() {
     const diffAmountCalculateCompleted = useSelector(diffAmountCalculateCompletedSelector);
     const endGame = useSelector(endGameSelector);
     const result = useSelector(resultMsgSelector)
-    const gameHistory = useSelector(gameHistorySelector)
-    const user = useSelector((state: IState) => state?.player.user)
+    const user: IUser | any = useSelector((state: IState) => state?.player.user)
     const bowlRef = useRef<HTMLImageElement>(null);
-    const [isLoading, setIsLoading] = useState(0);
-
+    const { currentUser } = useAuthContext()
     useEffect(() => {
         if (betted && rolled && open) {
             dispatch(compareAndCalculateDiffAmount());
@@ -46,13 +48,6 @@ function GameScreen() {
             }
         }
     }, [diffAmountCalculateCompleted, endGame]);
-    // Update user in localStorage
-    useEffect(() => {
-        if (betted && rolled && open && diffAmount && diffAmountCalculateCompleted) {
-            localStorage.setItem('currentUser', JSON.stringify(user))
-            updateUserInLocalStorage(user.username, user)
-        }
-    }, [user]);
     // Return result through toast
     useEffect(() => {
         if (betted && rolled && open && endGame && diffAmountCalculateCompleted) {
@@ -104,16 +99,23 @@ function GameScreen() {
         }
 
     }, [endGame, diffAmount, diffAmountCalculateCompleted])
-    const newGame = () => {
+    const newGame = async () => {
         if (open) {
             bowlRef?.current?.classList.remove("open");
             bowlRef?.current?.classList.add("close");
         }
         if (endGame && betted) {
-            saveGameHistoryToDB(diffAmount, user.username, gameHistory, dispatch);
+            await saveGameHistoryToDB(diffAmount, user.username);
         }
         dispatch(resetAll())
     }
+    // Update firebase
+    useEffect(() => {
+        const fetchUpdateUser = async () => {
+            await updateDoc(doc(database, "users", currentUser.id), user);
+        }
+        fetchUpdateUser()
+    }, [user?.coin])
     if (isSmallDevice) {
         return (
             <div>
@@ -137,9 +139,7 @@ function GameScreen() {
             </div>
         )
     }
-    // const client_email = import.meta.env.VITE_CLIENT_EMAIL;
-    // const private_key = import.meta.env.VITE_PRIVATE_KEY;
-    // const sheet_id = import.meta.env.VITE_SHEET_ID;
+
     return (
         <div>
             <audio ref={soundEffectRef} className="hidden" />

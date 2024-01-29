@@ -1,6 +1,7 @@
-import firebase from "firebase";
+import { initializeApp } from "firebase/app"
+import { getFirestore } from "firebase/firestore"
 
-const config = {
+export const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
   databaseURL: import.meta.env.VITE_DATABASE_URL,
@@ -10,10 +11,6 @@ const config = {
   appId: import.meta.env.VITE_APP_ID,
   measurementId: import.meta.env.VITE_MEASUREMENT_ID
 };
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(config);
-}
-
-// Tham chiếu tới cơ sở dữ liệu
-export const realtimeDB = firebase.database();
+const app = initializeApp(firebaseConfig)
+const database = getFirestore(app)
+export { database }

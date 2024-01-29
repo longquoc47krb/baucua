@@ -1,24 +1,25 @@
-import { useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
+import { useMediaQuery } from "@uidotdev/usehooks";
 import {
     BrowserRouter,
     Route,
     Routes
 } from "react-router-dom";
-import { IState } from "../common/interface";
+import { getPlaylist } from "../api/musicApi";
 import GuestRoute from "../components/GuestRoute";
 import MusicPlayer from "../components/MusicPlayer";
 import PetalFalling from "../components/PetalFalling";
 import PrivateRoutes from "../components/PrivateRoute";
+import { AuthProvider } from "../config/context/useAuthContext";
 import GameScreen from "./GameScreen";
 import LoginScreen from "./LoginScreen";
 import RegisterScreen from "./RegisterScreen";
 import StatsScreen from "./StatsScreen";
-import { useQuery } from "@tanstack/react-query";
-import { getPlaylist } from "../api/musicApi";
-import { useMediaQuery } from "@uidotdev/usehooks";
+import { useSelector } from "react-redux";
+import { currentUserSelector } from "../redux/reducers/player";
 
 const Layout = () => {
-    const token = useSelector((state: IState) => state.player.user);
+    const token = useSelector(currentUserSelector);
     const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
     const { data: playlistData } = useQuery({
         queryKey: ["playlist"],
@@ -34,22 +35,22 @@ const Layout = () => {
     })
     return (
         <>
-
-            <BrowserRouter>
-                <Routes>
-                    <Route element={<GuestRoute isAuth={!!token} />}>
-                        <Route path={"/sign-in"} element={<LoginScreen />} />
-                        <Route path={"/sign-up"} element={<RegisterScreen />} />
-                    </Route>
-                    <Route element={<PrivateRoutes isAuth={!!token} />}>
-                        <Route path={"/"} element={<GameScreen />} />
-                        <Route path={"/stats"} element={<StatsScreen />} />
-                    </Route>
-                </Routes>
-                <MusicPlayer playlistData={playlistData} isSmallDevice={isSmallDevice} />
-                <PetalFalling />
-            </BrowserRouter>
-
+            <AuthProvider>
+                <BrowserRouter>
+                    <Routes>
+                        <Route element={<GuestRoute isAuth={!!token} />}>
+                            <Route path={"/sign-in"} element={<LoginScreen />} />
+                            <Route path={"/sign-up"} element={<RegisterScreen />} />
+                        </Route>
+                        <Route element={<PrivateRoutes isAuth={!!token} />}>
+                            <Route path={"/"} element={<GameScreen />} />
+                            <Route path={"/stats"} element={<StatsScreen />} />
+                        </Route>
+                    </Routes>
+                    <MusicPlayer playlistData={playlistData} isSmallDevice={isSmallDevice} />
+                    <PetalFalling />
+                </BrowserRouter>
+            </AuthProvider>
         </>
     )
 }

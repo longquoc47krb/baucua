@@ -3,8 +3,6 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { formatNumberWithCommas } from '../../utils';
 import { IBetMoneyItem } from '../../common/interface';
-const gameHistoryString = localStorage.getItem('gameHistory');
-const gameHistory = gameHistoryString ? JSON.parse(gameHistoryString) : []
 export const betMoney = [ // mang luu so tien nguoi dat
     { name: 'bau', coin: 0, betLevel: 10000 },
     { name: 'cua', coin: 0, betLevel: 10000 },
@@ -38,7 +36,6 @@ const gameSlice = createSlice({
         result: [{ name: "", status: "" }],
         resultMsg: 'No win yet',
         totalBetMoney: 0,
-        gameHistory
     },
     reducers: {
         // Action to update the bet money for a specific item
@@ -157,15 +154,11 @@ const gameSlice = createSlice({
             const totalBetMoney = betMoney.reduce((sum, bet) => sum + bet.coin, 0);
             state.totalBetMoney = totalBetMoney;
         },
-        saveGameHistory: (state, { payload }) => {
-            state.gameHistory = payload;
-            localStorage.setItem('gameHistory', JSON.stringify(payload));
-        },
 
     },
 });
 
-export const { updateBetMoney, updateAfterRollDices, setRolled, setBetted, resetAll, updateSpecificBetMoneyCoin, increaseBetMoneyCoin, decreaseBetMoneyCoin, compareAndCalculateDiffAmount, setOpen, calculateTotalBetMoney, setEndGame, saveGameHistory, updateBetLevel } = gameSlice.actions;
+export const { updateBetMoney, updateAfterRollDices, setRolled, setBetted, resetAll, updateSpecificBetMoneyCoin, increaseBetMoneyCoin, decreaseBetMoneyCoin, compareAndCalculateDiffAmount, setOpen, calculateTotalBetMoney, setEndGame, updateBetLevel } = gameSlice.actions;
 export const gameSelector = (state: any) => state.game;
 
 export const betMoneySelector = createSelector(
@@ -180,10 +173,6 @@ export const rolledSelector = createSelector(
 export const wonStreakSelector = createSelector(
     gameSelector,
     (game) => game.wonStreak
-);
-export const gameHistorySelector = createSelector(
-    gameSelector,
-    (game) => game.gameHistory
 );
 
 export const afterRollDicesSelector = createSelector(

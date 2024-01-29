@@ -18,8 +18,6 @@ const MusicPlayer = ({ isSmallDevice, playlistData }: { isSmallDevice: boolean, 
         staleTime: 1000 * 60 * 60 * 24,
         gcTime: 1000 * 60 * 60 * 32
     })
-    console.log("song " + currentSongIndex + " is ", song)
-    console.log({ currentSongIndex, playlistData })
     const [isPlaying, setIsPlaying] = useState(false);
     const playlistRef = useRef<HTMLDivElement>(null)
     const audioRef = useRef(null);
@@ -104,7 +102,7 @@ const MusicPlayer = ({ isSmallDevice, playlistData }: { isSmallDevice: boolean, 
     const musicPlayerClass = classNames("absolute flex items-center gap-x-2 z-[9999] p-4 music-player", handleMusicPlayerPosition())
     if (!playlistData) return null;
     if (isSmallDevice) {
-        return <div className='absolute top-[24dvh] right-6 m-0 w-12'>
+        return <div className='absolute top-[24dvh] right-6 m-0 w-12 invisible'>
             <audio ref={audioRef} onEnded={handleSongEnd}>Your browser does not support the audio tag.
             </audio>
             <img src={playlistData[currentSongIndex]?.thumbnail ?? ""} className="w-12 aspect-square rounded-full rotate hover:scale-110 transition-all duration-200" />

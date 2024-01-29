@@ -25,7 +25,7 @@ function FloatMenu({ newGame }: FloatMenuProps) {
     }
     const handleLogout = () => {
         discardGame()
-        localStorage.removeItem("currentUser");
+        localStorage.removeItem("accessToken");
         dispatch(logout())
         navigate("/sign-in")
     }

@@ -4,12 +4,11 @@ import { chain, countBy, filter } from "lodash";
 import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { useSelector } from "react-redux";
+import { getGameHistory, getUserList } from "../api/firebaseApi";
 import { IGameHistory, IRankingDataItem, IState, IStats, IUser } from "../common/interface";
 import FloatMenu from "../components/FloatMenu";
 import Table from "../components/Table";
 import UserProfileComponent from "../components/UserProfileComponent";
-import { gameHistorySelector } from '../redux/reducers/game';
-import { userListSelector } from "../redux/reducers/player";
 import { getWinStreakAndMoneyEarned } from "../utils";
 function StatsScreen() {
     const [stats, setStats] = useState<IStats>({
@@ -21,8 +20,8 @@ function StatsScreen() {
         totalMoneyEarned: 0,
         totalMoneyLost: 0,
     })
-    const gameHistory = useSelector(gameHistorySelector)
-    const userList = useSelector(userListSelector)
+    const [userList, setUserList] = useState([])
+    const [gameHistory, setGameHistory] = useState([])
     const username = useSelector((state: IState) => state.player.user.username);
     const user = useSelector((state: IState) => state.player.user);
     const totalMoneyEarned = chain(gameHistory)
@@ -47,19 +46,6 @@ function StatsScreen() {
         const wonRate = totalGames === 0 ? 0 : (wonCount / totalGames) * 100;
 
         const wonStreaks = getWinStreakAndMoneyEarned(userStats, username)
-
-        // userStats.reduce(
-        //     (result: any, entry: any) => {
-        //         if (entry.status === 'won') {
-        //             result.currentStreak++;
-        //             result.maxStreak = Math.max(result.maxStreak, result.currentStreak);
-        //         } else {
-        //             result.currentStreak = 0;
-        //         }
-        //         return result;
-        //     },
-        //     { currentStreak: 0, maxStreak: 0 }
-        // );
 
         const balance = user.coin;
 
@@ -98,7 +84,25 @@ function StatsScreen() {
         })
     }, [gameHistory])
 
-
+    useEffect(() => {
+        const fetchUserList = async () => {
+            const response = await getUserList();
+            setUserList(response)
+        }
+        const fetchGameHistory = async () => {
+            const response = await getGameHistory();
+            setGameHistory(response)
+        }
+        const fetchData = async () => {
+            const [userListResponse, gameHistoryResponse] = await Promise.all([
+                getUserList(),
+                getGameHistory()
+            ]);
+            setUserList(userListResponse);
+            setGameHistory(gameHistoryResponse);
+        }
+        fetchData()
+    }, [])
     return (
         <div>
             {/* <audio ref={incorrectRef} className="hidden" /> */}

@@ -1,17 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import sign from 'jwt-encode';
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { IUser } from '../common/interface';
-import { useDispatch, useSelector } from 'react-redux';
-import { login, userListSelector } from '../redux/reducers/player';
+import { database } from '../config/firebase';
+import { setUser } from '../redux/reducers/player';
 import { lowercaseAndRemoveWhitespace } from '../utils';
+import { loginAccount } from '../api/firebaseApi';
 const LoginScreen = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const userList = useSelector(userListSelector)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const handleKeyDown = (e: any) => {
@@ -22,14 +24,14 @@ const LoginScreen = () => {
             handleLogin()
         }
     };
-    const handleLogin = () => {
-        // Retrieve user list from localStorage
-        // Find the user with the given username and password
-        const user = userList.find((u: IUser) => u.username === lowercaseAndRemoveWhitespace(username) && u.password === password);
+    const handleLogin = async () => {
+        const user = await loginAccount(username, password)
+        const secretKey = import.meta.env.VITE_JWT_SECRET
+        const token = sign({ username }, secretKey);
         if (user) {
             // Call the onLogin function with the authenticated user
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            dispatch(login({ username, password }))
+            localStorage.setItem('accessToken', token);
+            dispatch(setUser(user))
             navigate("/")
         } else {
             // Handle authentication failure

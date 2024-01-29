@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { diceResource } from "../common/constants";
-import { IUser } from "../common/interface";
+import { IGameHistory, IUser } from "../common/interface";
+import { saveGameHistory } from "../redux/reducers/game";
 
 export function getRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -96,3 +97,37 @@ export const lowercaseAndRemoveWhitespace = (string: string) => {
     const stringTrimmed = lowercaseString.replace(/\s+/g, '');
     return stringTrimmed;
 }
+export const getWinStreakAndMoneyEarned = (history: IGameHistory[], username: string): { currentWinStreak: number; maxWinStreak: number, moneyEarnedWinStreakPeriod: number } => {
+    let currentWinStreak = 0;
+    let maxWinStreak = 0;
+    let moneyEarnedWinStreakPeriod = 0;
+    const currentUserHistory = history.filter((item: IGameHistory) => item.username === username);
+    for (const item of currentUserHistory) {
+        if (item.status === 'won') {
+            // Increase the current win streak
+            currentWinStreak++;
+            moneyEarnedWinStreakPeriod += item.moneyEarned;
+            // Update the max win streak if the current win streak is greater
+            maxWinStreak = Math.max(maxWinStreak, currentWinStreak)
+        } else {
+            // Reset the current win streak on a loss
+            currentWinStreak = 0;
+        }
+    }
+
+    return { currentWinStreak, maxWinStreak, moneyEarnedWinStreakPeriod };
+};
+export const saveGameHistoryToDB = (diffAmount: number, username: string, gameHistory: string, dispatch: any) => {
+    const stats = {
+        moneyEarned: diffAmount > 0 ? diffAmount : 0,
+        moneyLost: diffAmount < 0 ? diffAmount : 0,
+        status: diffAmount > 0 ? "won" : diffAmount < 0 ? "loss" : "draw",
+        username,
+    };
+
+    // Add the new history to the list
+    const updatedStats = [...gameHistory, stats];
+
+    // Update localStorage with the updated user list
+    dispatch(saveGameHistory(updatedStats));
+};

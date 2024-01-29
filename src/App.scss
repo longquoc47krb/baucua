@@ -5,6 +5,7 @@
 @import "styles/mixins";
 @import "styles/game-screen";
 @import "styles/stats-screen";
+
 @font-face {
   font-family: "Baemin"; // Provide a name for your font
   src: url("/fonts/bmdaniel.ttf") format("woff"); // Specify the path to your font file and its format
@@ -259,6 +260,9 @@ body {
     color(var(--btnPrimary) shade(5%)),
     var(--btnPrimary)
   );
+  @include mobile {
+    padding: 5px;
+  }
   &#newGame {
     border-color: color(var(--btnNewGame) shade(30%))
       color(var(--btnNewGame) shade(20%)) var(--btnNewGame);
@@ -295,8 +299,8 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    background: linear-gradient(to right, transparent, #b0ff9d, transparent);
-    animation: lightTrail 0.5s linear forwards;
+    background: linear-gradient(to right, transparent, #b1ff9d90, transparent);
+    animation: lightTrail 2s infinite;
   }
 }
 @keyframes lightTrail {
@@ -395,10 +399,20 @@ body {
   );
   filter: drop-shadow(0px 5px 0px #2b0000);
 }
+.hightlight-row {
+  text-shadow: 0 0.08em 0 rgba(54, 54, 54, 0.5);
+  width: 300px;
+  outline: none;
+  border-radius: 0.5rem;
+  background: linear-gradient(
+    45deg,
+    rgb(119, 16, 0) 5.8%,
+    rgb(255, 21, 0) 112.6%
+  );
+  color: #fbff00;
+  filter: drop-shadow(0px 5px 0px #2b0000);
+}
 .music-player {
-  @include mobile {
-    display: none;
-  }
 }
 .petal {
   width: 2rem;

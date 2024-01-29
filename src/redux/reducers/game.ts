@@ -38,11 +38,7 @@ const gameSlice = createSlice({
         result: [{ name: "", status: "" }],
         resultMsg: 'No win yet',
         totalBetMoney: 0,
-        gameHistory,
-        wonStreak: {
-            streak: 0,
-            coin: 0
-        }
+        gameHistory
     },
     reducers: {
         // Action to update the bet money for a specific item
@@ -165,14 +161,11 @@ const gameSlice = createSlice({
             state.gameHistory = payload;
             localStorage.setItem('gameHistory', JSON.stringify(payload));
         },
-        updateWonStreak: (state, { payload }) => {
-            state.wonStreak = payload;
-        }
 
     },
 });
 
-export const { updateBetMoney, updateAfterRollDices, setRolled, setBetted, resetAll, updateSpecificBetMoneyCoin, increaseBetMoneyCoin, decreaseBetMoneyCoin, compareAndCalculateDiffAmount, setOpen, calculateTotalBetMoney, setEndGame, saveGameHistory, updateBetLevel, updateWonStreak } = gameSlice.actions;
+export const { updateBetMoney, updateAfterRollDices, setRolled, setBetted, resetAll, updateSpecificBetMoneyCoin, increaseBetMoneyCoin, decreaseBetMoneyCoin, compareAndCalculateDiffAmount, setOpen, calculateTotalBetMoney, setEndGame, saveGameHistory, updateBetLevel } = gameSlice.actions;
 export const gameSelector = (state: any) => state.game;
 
 export const betMoneySelector = createSelector(

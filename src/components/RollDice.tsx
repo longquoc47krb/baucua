@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { forwardRef, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { bettedSelector, endGameSelector, openSelector, setEndGame, setOpen, setRolled, updateAfterRollDices } from '../redux/reducers/game';
-import { countOccurrencesAndCompare } from '../utils';
+import { bettedSelector, diffAmountSelector, endGameSelector, gameHistorySelector, openSelector, setEndGame, setOpen, setRolled, updateAfterRollDices } from '../redux/reducers/game';
+import { countOccurrencesAndCompare, saveGameHistoryToDB } from '../utils';
 import Bowl from './Bowl';
 import Dice from './Dice';
 import Dish from './Dish';
+import { IState } from '../common/interface';
 interface RollDiceProps {
     newGame: () => void;
 }

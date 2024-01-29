@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useMediaQuery } from "@uidotdev/usehooks";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from "react-redux";
 import { IState } from "../common/interface";
@@ -10,9 +10,9 @@ import BettingTable from "../components/BettingTable";
 import FloatMenu from "../components/FloatMenu";
 import RollDice from "../components/RollDice";
 import UserBalance from "../components/UserBalance";
-import { bettedSelector, calculateTotalBetMoney, compareAndCalculateDiffAmount, diffAmountCalculateCompletedSelector, diffAmountSelector, endGameSelector, gameHistorySelector, openSelector, resetAll, resultMsgSelector, rolledSelector, saveGameHistory, totalAmountReceivedSelector } from '../redux/reducers/game';
+import { bettedSelector, calculateTotalBetMoney, compareAndCalculateDiffAmount, diffAmountCalculateCompletedSelector, diffAmountSelector, endGameSelector, gameHistorySelector, openSelector, resetAll, resultMsgSelector, rolledSelector, totalAmountReceivedSelector } from '../redux/reducers/game';
 import { updateCoinAfterRoll } from "../redux/reducers/player";
-import { updateUserInLocalStorage } from "../utils";
+import { saveGameHistoryToDB, updateUserInLocalStorage } from "../utils";
 function GameScreen() {
     const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
     const dispatch = useDispatch()
@@ -28,6 +28,8 @@ function GameScreen() {
     const gameHistory = useSelector(gameHistorySelector)
     const user = useSelector((state: IState) => state?.player.user)
     const bowlRef = useRef<HTMLImageElement>(null);
+    const [isLoading, setIsLoading] = useState(0);
+
     useEffect(() => {
         if (betted && rolled && open) {
             dispatch(compareAndCalculateDiffAmount());
@@ -35,7 +37,7 @@ function GameScreen() {
         }
     }, [betted, rolled, open]);
     useEffect(() => {
-        if (betted && rolled && open && diffAmount && diffAmountCalculateCompleted && endGame) {
+        if (betted && rolled && open && diffAmountCalculateCompleted && endGame) {
             dispatch(updateCoinAfterRoll({ diffAmount: totalAmountReceived }));
             if (diffAmount < 0) {
                 playRandomSound(soundEffectRef, incorrectPaths)
@@ -66,6 +68,7 @@ function GameScreen() {
                         primary: '#65a30d',
                         secondary: '#FFFAEE',
                     },
+                    duration: 5000
                 });
             } else if (diffAmount < 0) {
                 toast.error(<p dangerouslySetInnerHTML={{ __html: result }}></p>, {
@@ -79,6 +82,7 @@ function GameScreen() {
                         primary: '#d93029',
                         secondary: '#FFFAEE',
                     },
+                    duration: 5000
                 });
             } else if (diffAmount === 0) {
                 toast.success(<p dangerouslySetInnerHTML={{ __html: result }}></p>, {
@@ -92,31 +96,21 @@ function GameScreen() {
                         primary: '#65a30d',
                         secondary: '#FFFAEE',
                     },
-                    icon: '🤝🏻'
+                    icon: '🤝🏻',
+                    duration: 5000
                 });
             }
 
         }
 
     }, [endGame, diffAmount, diffAmountCalculateCompleted])
-    const saveGameHistoryFunc = () => {
-        const stats = {
-            moneyEarned: diffAmount > 0 ? diffAmount : 0,
-            moneyLost: diffAmount < 0 ? diffAmount : 0,
-            status: diffAmount > 0 ? "won" : (diffAmount < 0 ? "loss" : "draw"),
-            username: user.username
-        };
-        // Add the new history to the list
-        const updatedStats = [...gameHistory, stats];
-        // Update localStorage with the updated user list
-        dispatch(saveGameHistory(updatedStats))
-    };
     const newGame = () => {
-
-        endGame && saveGameHistoryFunc()
         if (open) {
             bowlRef?.current?.classList.remove("open");
             bowlRef?.current?.classList.add("close");
+        }
+        if (endGame && betted) {
+            saveGameHistoryToDB(diffAmount, user.username, gameHistory, dispatch);
         }
         dispatch(resetAll())
     }
@@ -143,9 +137,9 @@ function GameScreen() {
             </div>
         )
     }
-    const client_email = import.meta.env.VITE_CLIENT_EMAIL;
-    const private_key = import.meta.env.VITE_PRIVATE_KEY;
-    const sheet_id = import.meta.env.VITE_SHEET_ID;
+    // const client_email = import.meta.env.VITE_CLIENT_EMAIL;
+    // const private_key = import.meta.env.VITE_PRIVATE_KEY;
+    // const sheet_id = import.meta.env.VITE_SHEET_ID;
     return (
         <div>
             <audio ref={soundEffectRef} className="hidden" />

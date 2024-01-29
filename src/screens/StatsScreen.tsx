@@ -10,6 +10,7 @@ import Table from "../components/Table";
 import UserProfileComponent from "../components/UserProfileComponent";
 import { gameHistorySelector } from '../redux/reducers/game';
 import { userListSelector } from "../redux/reducers/player";
+import { getWinStreakAndMoneyEarned } from "../utils";
 function StatsScreen() {
     const [stats, setStats] = useState<IStats>({
         currentStreak: 0,
@@ -37,27 +38,7 @@ function StatsScreen() {
     const lossCount = gameStatusCounts['loss'] || 0;
     const drawCount = gameStatusCounts['draw'] || 0;
 
-    const wonStreaks = (history: IGameHistory[]): { currentWinStreak: number; maxWinStreak: number } => {
-        let currentWinStreak = 0;
-        let maxWinStreak = 0;
-        const currentUserHistory = history.filter((item: IGameHistory) => item.username === username);
-        for (const item of currentUserHistory) {
-            if (item.status === 'won') {
-                // Increase the current win streak
-                currentWinStreak++;
-
-                // Update the max win streak if the current win streak is greater
-                if (currentWinStreak > maxWinStreak) {
-                    maxWinStreak = currentWinStreak;
-                }
-            } else {
-                // Reset the current win streak on a loss
-                currentWinStreak = 0;
-            }
-        }
-
-        return { currentWinStreak, maxWinStreak };
-    };
+    const wonStreaks = getWinStreakAndMoneyEarned(gameHistory, username)
     const rankingData = userList?.map((user: IUser) => {
         const userStats = gameHistory.filter((entry: IGameHistory) => entry.username === user.username);
 
@@ -65,18 +46,20 @@ function StatsScreen() {
         const totalGames = userStats.length;
         const wonRate = totalGames === 0 ? 0 : (wonCount / totalGames) * 100;
 
-        const wonStreaks = userStats.reduce(
-            (result: any, entry: any) => {
-                if (entry.status === 'won') {
-                    result.currentStreak++;
-                    result.maxStreak = Math.max(result.maxStreak, result.currentStreak);
-                } else {
-                    result.currentStreak = 0;
-                }
-                return result;
-            },
-            { currentStreak: 0, maxStreak: 0 }
-        );
+        const wonStreaks = getWinStreakAndMoneyEarned(userStats, username)
+
+        // userStats.reduce(
+        //     (result: any, entry: any) => {
+        //         if (entry.status === 'won') {
+        //             result.currentStreak++;
+        //             result.maxStreak = Math.max(result.maxStreak, result.currentStreak);
+        //         } else {
+        //             result.currentStreak = 0;
+        //         }
+        //         return result;
+        //     },
+        //     { currentStreak: 0, maxStreak: 0 }
+        // );
 
         const balance = user.coin;
 
@@ -84,7 +67,7 @@ function StatsScreen() {
             name: user.name,
             username: user.username,
             wonRate: wonRate.toFixed(2),
-            wonStreak: wonStreaks.maxStreak,
+            wonStreak: wonStreaks.maxWinStreak,
             balance: balance.toFixed(2),
         };
     });
@@ -108,8 +91,8 @@ function StatsScreen() {
             wonCount,
             drawCount,
             lossCount,
-            currentStreak: wonStreaks(gameHistory).currentWinStreak,
-            maxStreak: wonStreaks(gameHistory).maxWinStreak,
+            currentStreak: wonStreaks.currentWinStreak,
+            maxStreak: wonStreaks.maxWinStreak,
             totalMoneyEarned,
             totalMoneyLost
         })

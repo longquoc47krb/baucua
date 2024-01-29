@@ -1,24 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useRef } from 'react';
-import { backgroundSound } from '../common/sound';
-import { MdSkipPrevious, MdSkipNext, MdPlayArrow, MdPause } from "react-icons/md";
-import classNames from 'classnames';
-import { useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { useMediaQuery } from '@uidotdev/usehooks';
+import classNames from 'classnames';
+import { useEffect, useRef, useState } from 'react';
+import { MdPause, MdPlayArrow, MdSkipNext, MdSkipPrevious } from "react-icons/md";
+import { useLocation } from 'react-router-dom';
+import { getSong } from '../api/musicApi';
 
-const MusicPlayer = () => {
-    const mobileDevice = useMediaQuery("only screen and (max-width : 768px)");
-    const desktopDevice = useMediaQuery("only screen and (min-width: 1024px) and (max-width: 1439px)");
-    const largeDesktopDevice = useMediaQuery("only screen and (min-width: 1440px)");
-    // console.log({ mobileDevice, desktopDevice, largeDesktopDevice })
+const MusicPlayer = ({ isSmallDevice, playlistData }: { isSmallDevice: boolean, playlistData: any }) => {
+    const [currentSongIndex, setCurrentSongIndex] = useState(0);
+    const { data: song } = useQuery({
+        queryKey: ["song", currentSongIndex],
+        queryFn: () => getSong(playlistData[currentSongIndex]?.id),
+        enabled: true,
+        retry: true,
+        staleTime: 1000 * 60 * 60 * 24,
+        gcTime: 1000 * 60 * 60 * 32
+    })
+    console.log("song " + currentSongIndex + " is ", song)
+    console.log({ currentSongIndex, playlistData })
     const [isPlaying, setIsPlaying] = useState(false);
     const playlistRef = useRef<HTMLDivElement>(null)
-    const [currentSongIndex, setCurrentSongIndex] = useState(Math.floor(Math.random() * backgroundSound.length));
     const audioRef = useRef(null);
     const location = useLocation()
     const pathname = location.pathname;
-    const TOP_RIGHT = !mobileDevice && pathname === "/" || pathname === "/sign-in" || pathname === "/sign-up";
-    const TOP_LEFT = largeDesktopDevice && pathname === "/" || pathname === "/sign-in" || pathname === "/sign-up";
+    const TOP_RIGHT = !isSmallDevice && pathname === "/" || pathname === "/sign-in" || pathname === "/sign-up";
     const handleMusicPlayerPosition = () => {
         if (TOP_RIGHT) {
             return "top-6 -right-2"
@@ -34,16 +41,16 @@ const MusicPlayer = () => {
     };
     const switchToPrevSong = () => {
         if (currentSongIndex === 0) {
-            setCurrentSongIndex(backgroundSound.length - 1);
+            setCurrentSongIndex(playlistData?.length - 1);
         } else {
-            setCurrentSongIndex((prevIndex) => (prevIndex - 1) % backgroundSound.length);
+            setCurrentSongIndex((prevIndex) => (prevIndex - 1) % playlistData?.length);
         }
     }
     const switchToNextSong = () => {
-        if (currentSongIndex === backgroundSound.length - 1) {
+        if (currentSongIndex === playlistData?.length - 1) {
             setCurrentSongIndex(0);
         } else {
-            setCurrentSongIndex((prevIndex) => (prevIndex + 1) % backgroundSound.length);
+            setCurrentSongIndex((prevIndex) => (prevIndex + 1) % playlistData?.length);
         }
     }
     const pauseCurrentSong = () => {
@@ -73,27 +80,53 @@ const MusicPlayer = () => {
             clearTimeout(timeoutId);
         };
     }, [location])
+    const handleAutoNextSong = () => {
+        setTimeout(() => {
+            if (!song && playlistData) {
+                switchToNextSong()
+            }
+        }, 5000)
+
+    }
     useEffect(() => {
         // Change the audio source when the current song index changes
         if (audioRef.current) {
-            audioRef.current.src = backgroundSound[currentSongIndex].path;
+            audioRef.current.src = song;
             audioRef.current.load();
             audioRef.current.play();
             setIsPlaying(true)
+            handleAutoNextSong()
         }
 
-    }, [currentSongIndex]);
+
+    }, [currentSongIndex, song]);
+    // Progress bar for audio track
     const musicPlayerClass = classNames("absolute flex items-center gap-x-2 z-[9999] p-4 music-player", handleMusicPlayerPosition())
+    if (!playlistData) return null;
+    if (isSmallDevice) {
+        return <div className='absolute top-[24dvh] right-6 m-0 w-12'>
+            <audio ref={audioRef} onEnded={handleSongEnd}>Your browser does not support the audio tag.
+            </audio>
+            <img src={playlistData[currentSongIndex]?.thumbnail ?? ""} className="w-12 aspect-square rounded-full rotate hover:scale-110 transition-all duration-200" />
+            <div className="marquee-container">
+                <p className="marquee  text-[#d50505] capitalize text-sm">{playlistData[currentSongIndex]?.title}</p>
+            </div>
+            <div className='flex items-center gap-x-2 text-[#d50505] relative'>
+                <MdSkipPrevious onClick={switchToPrevSong} className='hover:scale-105 duration-300 transition-transform cursor-pointer text-sm' />
+                {!isPlaying ? <MdPlayArrow className='hover:scale-105 duration-300 transition-transform cursor-pointer text-sm' onClick={playCurrentSong} /> : <MdPause className='hover:scale-105 duration-300 transition-transform cursor-pointer text-sm' onClick={pauseCurrentSong} />}
+                <MdSkipNext onClick={switchToNextSong} className='hover:scale-105 duration-300 transition-transform cursor-pointer text-sm' />
+            </div>
+        </div>
+    }
     return (
         <div className={musicPlayerClass} ref={playlistRef}>
-            <audio ref={audioRef} onEnded={handleSongEnd}>
-                Your browser does not support the audio tag.
+            <audio ref={audioRef} onEnded={handleSongEnd}>Your browser does not support the audio tag.
             </audio>
             {/* <IoIosPlay className='inline-block text-red-700 mr-2 ml-0' /><span className="text-red-700 text-left">Đang phát</span> */}
-            <img src={backgroundSound[currentSongIndex].thumbnail} className="w-16 aspect-square rounded-full rotate hover:scale-110 transition-all duration-200" />
+            <img src={playlistData[currentSongIndex]?.thumbnail ?? ""} className="w-16 aspect-square rounded-full rotate hover:scale-110 transition-all duration-200" />
             <div className="w-full">
                 <div className="marquee-container w-full">
-                    <p className="marquee text-[#eabd68] capitalize text-sm">{backgroundSound[currentSongIndex].title}</p></div>
+                    <p className="marquee text-[#eabd68] capitalize text-sm">{playlistData[currentSongIndex]?.title}</p></div>
                 <div className='flex items-center gap-x-4 text-[#eabd68] relative'>
                     <MdSkipPrevious onClick={switchToPrevSong} className='hover:scale-105 duration-300 transition-transform cursor-pointer text-3xl' />
                     {!isPlaying ? <MdPlayArrow className='hover:scale-105 duration-300 transition-transform cursor-pointer text-4xl' onClick={playCurrentSong} /> : <MdPause className='hover:scale-105 duration-300 transition-transform cursor-pointer text-4xl' onClick={pauseCurrentSong} />}

@@ -85,14 +85,6 @@ function StatsScreen() {
     }, [gameHistory])
 
     useEffect(() => {
-        const fetchUserList = async () => {
-            const response = await getUserList();
-            setUserList(response)
-        }
-        const fetchGameHistory = async () => {
-            const response = await getGameHistory();
-            setGameHistory(response)
-        }
         const fetchData = async () => {
             const [userListResponse, gameHistoryResponse] = await Promise.all([
                 getUserList(),
@@ -110,7 +102,6 @@ function StatsScreen() {
                 reverseOrder={true} />
             <div className='flex flex-col items-center pt-6 p-2 h-screen relative overflow-hidden'
                 style={{
-                    // backgroundImage: `url('/images/background.jpg')`,
                     backgroundColor: "#d50505",
                     backgroundPosition: "center",
                     backgroundSize: "cover",

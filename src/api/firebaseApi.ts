@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { IGameHistory, IUser } from "../common/interface";
 import { database } from "../config/firebase";
 import { lowercaseAndRemoveWhitespace } from "../utils";
@@ -40,6 +40,21 @@ export async function getUserList() {
         return userList;
     } catch (err) {
         return []
+    }
+}
+export async function updateUserCoin(userId: string, coin: number) {
+    try {
+        const userSnap = await getDoc(doc(database, "users", userId));
+        if (userSnap.exists()) {
+            const userData = userSnap.data();
+            await updateDoc(doc(database, "users", userId), { coin: userData.coin + coin })
+            return "done"
+        } else {
+            console.log("User not found")
+        }
+    } catch (err) {
+        console.log(err)
+        return "fail";
     }
 }
 export async function saveGameHistory(game: IGameHistory) {

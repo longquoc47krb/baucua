@@ -17,6 +17,7 @@ import { database } from "../config/firebase";
 import { bettedSelector, calculateTotalBetMoney, compareAndCalculateDiffAmount, diffAmountCalculateCompletedSelector, diffAmountSelector, endGameSelector, openSelector, resetAll, resultMsgSelector, rolledSelector, totalAmountReceivedSelector } from '../redux/reducers/game';
 import { updateCoinAfterRoll } from "../redux/reducers/player";
 import { saveGameHistoryToDB } from "../utils";
+import { updateUserCoin } from "../api/firebaseApi";
 function GameScreen() {
     const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
     const dispatch = useDispatch()
@@ -39,14 +40,18 @@ function GameScreen() {
         }
     }, [betted, rolled, open]);
     useEffect(() => {
-        if (betted && rolled && open && diffAmountCalculateCompleted && endGame) {
-            dispatch(updateCoinAfterRoll({ diffAmount: totalAmountReceived }));
-            if (diffAmount < 0) {
-                playRandomSound(soundEffectRef, incorrectPaths)
-            } else {
-                playRandomSound(soundEffectRef, correctPaths)
+        const handleUpdateUserCoin = async () => {
+            if (betted && rolled && open && diffAmountCalculateCompleted && endGame) {
+                await updateUserCoin(currentUser.id, totalAmountReceived)
+                dispatch(updateCoinAfterRoll({ diffAmount: totalAmountReceived }));
+                if (diffAmount < 0) {
+                    playRandomSound(soundEffectRef, incorrectPaths)
+                } else {
+                    playRandomSound(soundEffectRef, correctPaths)
+                }
             }
         }
+        handleUpdateUserCoin()
     }, [diffAmountCalculateCompleted, endGame]);
     // Return result through toast
     useEffect(() => {
@@ -109,13 +114,6 @@ function GameScreen() {
         }
         dispatch(resetAll())
     }
-    // Update firebase
-    useEffect(() => {
-        const fetchUpdateUser = async () => {
-            await updateDoc(doc(database, "users", currentUser.id), user);
-        }
-        fetchUpdateUser()
-    }, [user?.coin])
     if (isSmallDevice) {
         return (
             <div>

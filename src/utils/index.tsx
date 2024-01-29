@@ -19,7 +19,7 @@ export function getFirstLetters(str: string) {
     return firstLetters.join(''); // Join the first letters into a new string
 }
 export function formatNumberWithCommas(number: any) {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return number.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,").replace(/\.00$/, '')
 }
 export function convertLargeNumberFormat(num: number) {
     const absNum = Math.abs(num);

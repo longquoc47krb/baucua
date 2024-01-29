@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { FaTrashCan } from "react-icons/fa6";
 import { useDispatch, useSelector } from 'react-redux';
+import { updateUserCoin } from '../api/firebaseApi';
+import { useAuthContext } from '../config/context/useAuthContext';
 import { calculateTotalBetMoney, decreaseBetMoneyCoin, endGameSelector, increaseBetMoneyCoin, rolledSelector, setBetted, totalBetMoneySelector, updateSpecificBetMoneyCoin } from '../redux/reducers/game';
 import { addCoins, coinSelector, subtractCoins } from '../redux/reducers/player';
 import { convertLargeNumberFormat } from '../utils';
@@ -18,24 +20,28 @@ interface BettingZoneProps {
 }
 function BettingZone({ item }: BettingZoneProps) {
     const [isAllIn, setIsAllIn] = useState(false);
+    const [isApiCallInProgress, setApiCallInProgress] = useState(false);
     const betMoneyItem = useSelector((state: any) => state.game.betMoney.find((i: any) => i.name === item.label));
     const [bettingLevel, setBettingLevel] = useState(betMoneyItem.betLevel);
+    console.log(betMoneyItem.name + " with betting level is " + betMoneyItem.betLevel)
     const rolled = useSelector(rolledSelector);
     const endGame = useSelector(endGameSelector);
     const afterRollDiceItem = useSelector((state: any) => state.game.afterRollDices.find((i: any) => i.name === item.label));
     const userBalance = useSelector(coinSelector);
     const totalBetMoney = useSelector(totalBetMoneySelector);
+    const { currentUser } = useAuthContext()
     const dispatch = useDispatch();
-    const decreaseBettingStakes = () => {
+
+    const decreaseBettingStakes = async () => {
         if (betMoneyItem.coin >= bettingLevel) {
+            if (!endGame) {
+                await updateUserCoin(currentUser.id, bettingLevel)
+                dispatch(addCoins(bettingLevel))
+            }
             dispatch(decreaseBetMoneyCoin({
                 name: betMoneyItem.name,
                 amount: bettingLevel
             }))
-            if (!endGame) {
-
-                dispatch(addCoins(bettingLevel))
-            }
         }
     };
     const increaseBettingStakes = () => {
@@ -53,19 +59,44 @@ function BettingZone({ item }: BettingZoneProps) {
                 },
             });
         }
-        if (userBalance > 0 && bettingLevel <= userBalance) {
-            console.log(bettingLevel + " and " + userBalance)
-            dispatch(increaseBetMoneyCoin({
-                name: betMoneyItem.name,
-                amount: bettingLevel
-            }))
-            if (!endGame) {
-                dispatch(subtractCoins(bettingLevel))
+        if (userBalance > 0 && bettingLevel <= userBalance && !endGame) {
+
+            try {
+                // Update user coin and wait for it to complete
+                dispatch(subtractCoins(bettingLevel));
+                dispatch(increaseBetMoneyCoin({
+                    name: betMoneyItem.name,
+                    amount: bettingLevel
+                }));
+
+            } catch (error) {
+                console.error('Error updating user coin:', error.message);
+                // Handle the error appropriately
             }
         }
 
+
     };
-    const handleAllIn = () => {
+    const throttleIncreaseStake = useCallback(async () => {
+        if (isApiCallInProgress) {
+            return;
+        }
+        setApiCallInProgress(true);
+        try {
+            if (userBalance > 0 && bettingLevel <= userBalance && !endGame) {
+                await updateUserCoin(currentUser.id, bettingLevel * -1);
+                console.log('API call success!');
+                increaseBettingStakes()
+            }
+
+        } catch (error) {
+            console.error('API call error:', error);
+
+        } finally {
+            setApiCallInProgress(false);
+        }
+    }, [isApiCallInProgress, bettingLevel])
+    const handleAllIn = async () => {
         if (!isAllIn) {
             if (userBalance > 0) {
                 dispatch(updateSpecificBetMoneyCoin({
@@ -74,6 +105,7 @@ function BettingZone({ item }: BettingZoneProps) {
                 }));
 
                 if (!endGame) {
+                    await updateUserCoin(currentUser.id, userBalance * -1)
                     dispatch(subtractCoins(userBalance));
                 }
             } else {
@@ -92,27 +124,31 @@ function BettingZone({ item }: BettingZoneProps) {
                 return;
             }
         } else {
+            if (!endGame) {
+                await updateUserCoin(currentUser.id, betMoneyItem.coin)
+                dispatch(addCoins(betMoneyItem.coin));
+            }
             dispatch(updateSpecificBetMoneyCoin({
                 name: betMoneyItem.name,
                 coin: 0
             }));
 
-            if (!endGame) {
-                dispatch(addCoins(betMoneyItem.coin));
-            }
+
         }
 
         setIsAllIn(!isAllIn);
     };
-    const clearBettingStakes = (e: any) => {
+    const clearBettingStakes = async (e: any) => {
         e.stopPropagation()
+        if (!endGame) {
+            await updateUserCoin(currentUser.id, betMoneyItem.coin)
+            dispatch(addCoins(betMoneyItem.coin))
+        }
         dispatch(updateSpecificBetMoneyCoin({
             name: betMoneyItem.name,
             coin: 0
         }))
-        if (!endGame) {
-            dispatch(addCoins(betMoneyItem.coin))
-        }
+
     };
     useEffect(() => { dispatch(calculateTotalBetMoney()) }, [betMoneyItem])
     useEffect(() => {
@@ -149,7 +185,7 @@ function BettingZone({ item }: BettingZoneProps) {
                     <div className='flex items-center gap-x-4 justify-center text-gray-900 w-full'>
                         <button className='px-4 py-2 rounded-md button-3d disabled:bg-[#aa8136] flex-1 disabled:cursor-not-allowed flex justify-center btn-minus-plus' onClick={decreaseBettingStakes} disabled={endGame}><FaMinus className='text-xs md:text-base' /></button>
                         <p className='flex-1'>{convertLargeNumberFormat(betMoneyItem?.coin)}</p>
-                        <button className='px-4 py-2 rounded-md button-3d flex-1 disabled:bg-[#aa8136] disabled:cursor-not-allowed flex justify-center btn-minus-plus' onClick={increaseBettingStakes} disabled={endGame}><FaPlus className='text-xs md:text-base' /></button>
+                        <button className='px-4 py-2 rounded-md button-3d flex-1 disabled:bg-[#aa8136] disabled:cursor-not-allowed flex justify-center btn-minus-plus' onClick={throttleIncreaseStake} disabled={endGame}><FaPlus className='text-xs md:text-base' /></button>
                     </div>
                     <div className='flex items-center gap-x-4 justify-center mt-2 text-gray-900 w-full'>
                         <button id="rollDice" className='p-1 md:p-2 rounded-md button-3d flex-1 disabled:bg-[#aa8136] disabled:cursor-not-allowed flex justify-center text-sm button-3d uppercase' onClick={handleAllIn} disabled={endGame}>Tất tay</button>

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { HiMiniTrophy } from 'react-icons/hi2';
-import { convertLargeNumberFormat } from '../utils';
+import { convertLargeNumberFormat, formatNumberWithCommas } from '../utils';
 import { useSelector } from 'react-redux';
 import { IState, IUser } from '../common/interface';
 import { useEffect } from 'react';
@@ -20,7 +20,7 @@ function Table({ data }: { data: any }) {
         const userIndex = data.findIndex((user: IUser) => user.username === currentUser.username);
         const row = document.getElementById(`ranking-row-${userIndex}`)
         row?.classList.add("hightlight-row");
-    }, [])
+    }, [data])
     return (
         <div className="table-container mx-auto overflow-x-auto rounded-md">
 
@@ -43,7 +43,7 @@ function Table({ data }: { data: any }) {
                             <td className="py-2 px-4 border-b whitespace-nowrap">{item.username}</td>
                             <td className="py-2 px-4 border-b whitespace-nowrap">{item.wonRate}%</td>
                             <td className="py-2 px-4 border-b whitespace-nowrap">{item.wonStreak}</td>
-                            <td className="py-2 px-4 border-b whitespace-nowrap">{convertLargeNumberFormat(item.balance)}</td>
+                            <td className="py-2 px-4 border-b whitespace-nowrap">{formatNumberWithCommas(item.balance)}</td>
                         </tr>)
                     }
 

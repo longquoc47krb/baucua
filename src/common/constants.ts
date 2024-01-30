@@ -39,4 +39,4 @@ export const bettingLevels = [
     1000000000
 ]
 // CHEAT
-export const BOWL_TAP_NUMBER = 10;
+export const BOWL_TAP_NUMBER = 5;

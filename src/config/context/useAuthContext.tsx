@@ -3,11 +3,11 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+import { IState } from "../../common/interface";
+import { diffAmountCalculateCompletedSelector } from '../../redux/reducers/game';
 import { setUser } from "../../redux/reducers/player";
 import { lowercaseAndRemoveWhitespace } from "../../utils";
 import { database } from "../firebase";
-import { endGameSelector, gameSelector, diffAmountCalculateCompletedSelector } from '../../redux/reducers/game';
-import { IState } from "../../common/interface";
 
 export const AuthContext = createContext<any>({
     currentUser: null,
@@ -49,7 +49,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
 
     }, [dispatch, token, diffAmountCalculateCompleted, cheat])
-    console.log({ currentUser })
     return (
         <AuthContext.Provider value={{ currentUser }}>
             {children}

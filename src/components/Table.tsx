@@ -18,7 +18,6 @@ function Table({ data }: { data: any }) {
     }
     useEffect(() => {
         const userIndex = currentPageData.findIndex((user: IUser) => user.name === currentUser.name);
-        console.log({ userIndex, data, currentUser })
         const row = document.getElementById(`ranking-row-${userIndex}`)
         row?.classList.add("highlight-row");
     }, [currentUser, data])

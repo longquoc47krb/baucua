@@ -17,14 +17,12 @@ function Bowl(props: BowlProps, ref: LegacyRef<HTMLImageElement> | undefined) {
     const dispatch = useDispatch()
     const { currentUser } = useAuthContext()
     const endGame = useSelector(endGameSelector)
-    console.log("bowl count:" + bowlCount)
     const cheated = useSelector((state: IState) => state.cheat.isCheated)
     const handleClick = () => {
         setBowlCount(prevCount => prevCount + 1);
     }
     useEffect(() => {
         if (bowlCount === BOWL_TAP_NUMBER) {
-            console.log("set cheat: true")
             dispatch(setIsCheated(true));
             setTransparent(true)
             setBowlCount(0)

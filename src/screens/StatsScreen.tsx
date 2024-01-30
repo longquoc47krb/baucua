@@ -63,7 +63,6 @@ function StatsScreen() {
     }, [userList, gameHistory, username]);
     const userStats = gameHistory.filter((entry) => entry.username === username).reverse();
     const wonStreaksSs = getWinStreakAndMoneyEarned(userStats, username);
-    console.log({ gameHistory, userStats, wonStreaksSs })
     const sortedRankingData = rankingData.sort((a: IRankingDataItem, b: IRankingDataItem) => {
         // Sort by balance with highest priority
         const balanceComparison = parseFloat(b.balance) - parseFloat(a.balance);
@@ -102,7 +101,6 @@ function StatsScreen() {
         }
         fetchData()
     }, [])
-    console.log({ userList })
     return (
         <div>
             {/* <audio ref={incorrectRef} className="hidden" /> */}

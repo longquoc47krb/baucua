@@ -113,6 +113,16 @@ function GameScreen() {
         }
         dispatch(resetAll())
     }
+    // Update user coin in db
+    useEffect(() => {
+        if (diffAmountCalculateCompleted) {
+            const updateCoin = async () => {
+                await updateUserCoin(currentUser.id, diffAmount)
+            }
+            updateCoin()
+        }
+
+    }, [diffAmountCalculateCompleted])
     if (isSmallDevice) {
         return (
             <div>
@@ -123,7 +133,7 @@ function GameScreen() {
                 {/* <GiHamburgerMenu className="text-red-700 text-2xl absolute top-4 right-10 z-10" onClick={() => setOpenDrawer(!openDrawer)} /> */}
                 <div className='game-screen'
                     style={{
-                        backgroundImage: `url('/images/background.jpg')`,
+                        backgroundImage: `url('/images/background.jpeg')`,
                         backgroundPosition: "center",
                         backgroundSize: "cover",
                         backgroundRepeat: "no-repeat",
@@ -136,16 +146,7 @@ function GameScreen() {
             </div>
         )
     }
-    // Update user coin in db
-    useEffect(() => {
-        if (diffAmountCalculateCompleted) {
-            const updateCoin = async () => {
-                await updateUserCoin(currentUser.id, diffAmount)
-            }
-            updateCoin()
-        }
 
-    }, [diffAmountCalculateCompleted])
     return (
         <div>
             <audio ref={soundEffectRef} className="hidden" />

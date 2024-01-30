@@ -22,7 +22,6 @@ function BettingZone({ item }: BettingZoneProps) {
     const [isApiCallInProgress, setApiCallInProgress] = useState(false);
     const betMoneyItem = useSelector((state: any) => state.game.betMoney.find((i: any) => i.name === item.label));
     const [bettingLevel, setBettingLevel] = useState(betMoneyItem.betLevel);
-    console.log(betMoneyItem.name + " with betting level is " + betMoneyItem.betLevel)
     const rolled = useSelector(rolledSelector);
     const endGame = useSelector(endGameSelector);
     const afterRollDiceItem = useSelector((state: any) => state.game.afterRollDices.find((i: any) => i.name === item.label));

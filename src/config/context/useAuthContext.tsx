@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const dispatch = useDispatch()
     const fetchUser = async () => {
         const decoded = jwtDecode(token);
-        console.log({ decoded })
         const userQuery = query(collection(database, "users"), where("username", "==", lowercaseAndRemoveWhitespace(decoded?.username)));
         const userDoc = await getDocs(userQuery).then((response) => response.docs[0]);
         const user = userDoc.data();

@@ -16,7 +16,6 @@ export async function registerAccount(user: IUser) {
 export async function loginAccount(username: string, password: string) {
     try {
         const userQuery = query(collection(database, "users"), where("username", "==", lowercaseAndRemoveWhitespace(username)), where("password", "==", password));
-        console.log({ userQuery })
         const userSnapshot = await getDocs(userQuery);
         const userDoc = userSnapshot.docs[0];
         const userData = userDoc.data();
@@ -30,7 +29,6 @@ export async function getUserList() {
     try {
         var userList = [];
         const userQuery = query(collection(database, "users"));
-        console.log({ userQuery })
         const userSnapshot = await getDocs(userQuery);
         userSnapshot.forEach((doc) => {
             // Access document data using doc.data()

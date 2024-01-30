@@ -1,9 +1,8 @@
 
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { persistStore } from 'redux-persist';
+import cheatReducer from "./reducers/cheat";
 import gameReducer from "./reducers/game";
 import playerReducer from "./reducers/player";
-import cheatReducer from "./reducers/cheat";
 
 const rootReducer = combineReducers({
     player: playerReducer,
@@ -15,7 +14,5 @@ const rootReducer = combineReducers({
 const store = configureStore({
     reducer: rootReducer,
 });
-
-export const persistor = persistStore(store);
 
 export default store;

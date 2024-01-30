@@ -20,7 +20,6 @@ const MusicPlayer = ({ isSmallDevice, playlistData }: { isSmallDevice: boolean, 
         gcTime: 1000 * 60 * 60 * 32
     })
     const { currentUser } = useAuthContext()
-    console.log({ id: currentUser })
     const [isPlaying, setIsPlaying] = useState(false);
     const playlistRef = useRef<HTMLDivElement>(null)
     const audioRef = useRef(null);
@@ -102,23 +101,8 @@ const MusicPlayer = ({ isSmallDevice, playlistData }: { isSmallDevice: boolean, 
 
     }, [currentSongIndex, song]);
     // Progress bar for audio track
-    const musicPlayerClass = classNames("absolute flex items-center gap-x-2 z-[9999] p-4 music-player", handleMusicPlayerPosition())
+    const musicPlayerClass = classNames("absolute md:flex md:items-center md:gap-x-2 z-[9999] md:p-4 music-player hidden", handleMusicPlayerPosition())
     if (!playlistData) return null;
-    if (isSmallDevice) {
-        return <div className='absolute top-[24dvh] right-6 m-0 w-12 invisible'>
-            <audio ref={audioRef} onEnded={handleSongEnd}>Your browser does not support the audio tag.
-            </audio>
-            <img src={playlistData[currentSongIndex]?.thumbnail ?? ""} className="w-12 aspect-square rounded-full rotate hover:scale-110 transition-all duration-200" />
-            <div className="marquee-container">
-                <p className="marquee  text-[#d50505] capitalize text-sm">{playlistData[currentSongIndex]?.title}</p>
-            </div>
-            <div className='flex items-center gap-x-2 text-[#d50505] relative'>
-                <MdSkipPrevious onClick={switchToPrevSong} className='hover:scale-105 duration-300 transition-transform cursor-pointer text-sm' />
-                {!isPlaying ? <MdPlayArrow className='hover:scale-105 duration-300 transition-transform cursor-pointer text-sm' onClick={playCurrentSong} /> : <MdPause className='hover:scale-105 duration-300 transition-transform cursor-pointer text-sm' onClick={pauseCurrentSong} />}
-                <MdSkipNext onClick={switchToNextSong} className='hover:scale-105 duration-300 transition-transform cursor-pointer text-sm' />
-            </div>
-        </div>
-    }
     return (
         <div className={musicPlayerClass} ref={playlistRef}>
             <audio ref={audioRef} onEnded={handleSongEnd}>Your browser does not support the audio tag.

@@ -2,7 +2,7 @@ import { FaSignOutAlt } from 'react-icons/fa';
 import { IoIosStats, IoMdCube } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { openSelector, totalBetMoneySelector } from '../redux/reducers/game';
+import { openSelector, resetAll, resetDiffAmount, totalBetMoneySelector } from '../redux/reducers/game';
 import { addCoins, logout } from '../redux/reducers/player';
 interface FloatMenuProps {
     newGame?: () => void;
@@ -27,6 +27,8 @@ function FloatMenu({ newGame }: FloatMenuProps) {
         discardGame()
         localStorage.removeItem("accessToken");
         dispatch(logout())
+        dispatch(resetDiffAmount())
+        dispatch(resetAll())
         navigate("/sign-in")
     }
     const handleGoToStats = () => {

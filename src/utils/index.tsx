@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { updateDoc } from "firebase/firestore";
 import { diceResource } from "../common/constants";
-import { IGameHistory, IUser } from "../common/interface";
+import { IGameHistory, IUser, IWinStreak } from "../common/interface";
 import { database } from "../config/firebase";
 import { saveGameHistory } from "../api/firebaseApi";
+import { Dispatch } from "@reduxjs/toolkit";
+import { addCoins, setUser } from "../redux/reducers/player";
+import { setAllGameStateAreTrue } from "../redux/reducers/game";
+import { setIsCheated } from "../redux/reducers/cheat";
 
 export function getRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -19,7 +23,7 @@ export function getFirstLetters(str: string) {
     return firstLetters.join(''); // Join the first letters into a new string
 }
 export function formatNumberWithCommas(number: any) {
-    return number.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,").replace(/\.00$/, '')
+    return number.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 }
 export function convertLargeNumberFormat(num: number) {
     const absNum = Math.abs(num);
@@ -99,7 +103,7 @@ export const lowercaseAndRemoveWhitespace = (string: string) => {
     const stringTrimmed = lowercaseString.replace(/\s+/g, '');
     return stringTrimmed;
 }
-export const getWinStreakAndMoneyEarned = (history: IGameHistory[], username: string): { currentWinStreak: number; maxWinStreak: number, moneyEarnedWinStreakPeriod: number } => {
+export const getWinStreakAndMoneyEarned = (history: IGameHistory[], username: string): IWinStreak => {
     let currentWinStreak = 0;
     let maxWinStreak = 0;
     let moneyEarnedWinStreakPeriod = 0;
@@ -110,7 +114,9 @@ export const getWinStreakAndMoneyEarned = (history: IGameHistory[], username: st
             currentWinStreak++;
             moneyEarnedWinStreakPeriod += item.moneyEarned;
             // Update the max win streak if the current win streak is greater
-            maxWinStreak = Math.max(maxWinStreak, currentWinStreak)
+            if (currentWinStreak >= maxWinStreak) {
+                maxWinStreak = currentWinStreak;
+            }
         } else {
             // Reset the current win streak on a loss
             currentWinStreak = 0;
@@ -125,6 +131,7 @@ export const saveGameHistoryToDB = async (diffAmount: number, username: string) 
         moneyLost: diffAmount < 0 ? diffAmount : 0,
         status: diffAmount > 0 ? "won" : diffAmount < 0 ? "loss" : "draw",
         username,
+        date: Date.now()
     };
 
     await saveGameHistory(stats);

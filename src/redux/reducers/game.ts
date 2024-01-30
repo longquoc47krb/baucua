@@ -92,6 +92,12 @@ const gameSlice = createSlice({
         setEndGame: (state, { payload }) => {
             state.endGame = payload;
         },
+        setAllGameStateAreTrue: (state) => {
+            state.rolled = true;
+            state.betted = true;
+            state.open = true;
+            state.endGame = true;
+        },
         // Action to update the results after rolling dices for a specific item
         updateAfterRollDices: (state, action) => {
             const { name, quantity } = action.payload;
@@ -100,6 +106,9 @@ const gameSlice = createSlice({
             if (resultIndex !== -1) {
                 state.afterRollDices[resultIndex].quantity = quantity;
             }
+        },
+        resetDiffAmount: (state) => {
+            state.diffAmount = 0;
         },
         resetAll: (state) => {
             const updatedBetMoney = state.betMoney.map((item: IBetMoneyItem) => ({
@@ -112,6 +121,7 @@ const gameSlice = createSlice({
             state.endGame = false;
             state.diffAmountCalculateCompleted = false;
             state.result = [{ name: "", status: "" }]
+            state.betMoney = betMoney;
         },
         // Action to compare and calculate diffAmount
         compareAndCalculateDiffAmount: (state) => {
@@ -158,7 +168,7 @@ const gameSlice = createSlice({
     },
 });
 
-export const { updateBetMoney, updateAfterRollDices, setRolled, setBetted, resetAll, updateSpecificBetMoneyCoin, increaseBetMoneyCoin, decreaseBetMoneyCoin, compareAndCalculateDiffAmount, setOpen, calculateTotalBetMoney, setEndGame, updateBetLevel } = gameSlice.actions;
+export const { updateBetMoney, updateAfterRollDices, setRolled, setBetted, resetAll, updateSpecificBetMoneyCoin, increaseBetMoneyCoin, decreaseBetMoneyCoin, compareAndCalculateDiffAmount, setOpen, calculateTotalBetMoney, setEndGame, updateBetLevel, resetDiffAmount, setAllGameStateAreTrue } = gameSlice.actions;
 export const gameSelector = (state: any) => state.game;
 
 export const betMoneySelector = createSelector(

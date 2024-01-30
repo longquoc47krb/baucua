@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { MdPause, MdPlayArrow, MdSkipNext, MdSkipPrevious } from "react-icons/md";
 import { useLocation } from 'react-router-dom';
 import { getSong } from '../api/musicApi';
+import { useAuthContext } from '../config/context/useAuthContext';
 
 const MusicPlayer = ({ isSmallDevice, playlistData }: { isSmallDevice: boolean, playlistData: any }) => {
     const [currentSongIndex, setCurrentSongIndex] = useState(0);
@@ -18,6 +19,8 @@ const MusicPlayer = ({ isSmallDevice, playlistData }: { isSmallDevice: boolean, 
         staleTime: 1000 * 60 * 60 * 24,
         gcTime: 1000 * 60 * 60 * 32
     })
+    const { currentUser } = useAuthContext()
+    console.log({ id: currentUser })
     const [isPlaying, setIsPlaying] = useState(false);
     const playlistRef = useRef<HTMLDivElement>(null)
     const audioRef = useRef(null);

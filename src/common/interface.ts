@@ -9,6 +9,12 @@ export interface IGameHistory {
     moneyLost: number;
     status: string;
     username: string;
+    date: number;
+}
+export interface IWinStreak {
+    currentWinStreak: number;
+    maxWinStreak: number;
+    moneyEarnedWinStreakPeriod: number;
 }
 export interface IStats {
     wonCount: number;
@@ -29,9 +35,14 @@ export interface IRankingDataItem {
 export interface IPlayerInitialState {
     user: IUser;
 }
+export interface ICheatInitialState {
+    bowlTapCount: number;
+    isCheated: boolean;
+}
 export interface IState {
     player: IPlayerInitialState;
     game: IGameInitialState;
+    cheat: ICheatInitialState,
 }
 export interface IGameInitialState {
     betMoney: Array<{ name: string; coin: number }>;

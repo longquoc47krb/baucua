@@ -42,7 +42,6 @@ function GameScreen() {
     useEffect(() => {
         const handleUpdateUserCoin = async () => {
             if (betted && rolled && open && diffAmountCalculateCompleted && endGame) {
-                await updateUserCoin(currentUser.id, totalAmountReceived)
                 dispatch(updateCoinAfterRoll({ diffAmount: totalAmountReceived }));
                 if (diffAmount < 0) {
                     playRandomSound(soundEffectRef, incorrectPaths)
@@ -137,7 +136,13 @@ function GameScreen() {
             </div>
         )
     }
-
+    // Update user coin in db
+    useEffect(() => {
+        const updateCoin = async () => {
+            diffAmountCalculateCompleted && await updateUserCoin(currentUser.id, diffAmount)
+        }
+        updateCoin()
+    }, [diffAmountCalculateCompleted])
     return (
         <div>
             <audio ref={soundEffectRef} className="hidden" />

@@ -35,7 +35,6 @@ function BettingZone({ item }: BettingZoneProps) {
     const decreaseBettingStakes = async () => {
         if (betMoneyItem.coin >= bettingLevel) {
             if (!endGame) {
-                await updateUserCoin(currentUser.id, bettingLevel)
                 dispatch(addCoins(bettingLevel))
             }
             dispatch(decreaseBetMoneyCoin({
@@ -84,7 +83,6 @@ function BettingZone({ item }: BettingZoneProps) {
         setApiCallInProgress(true);
         try {
             if (userBalance > 0 && bettingLevel <= userBalance && !endGame) {
-                await updateUserCoin(currentUser.id, bettingLevel * -1);
                 console.log('API call success!');
                 increaseBettingStakes()
             }
@@ -96,18 +94,17 @@ function BettingZone({ item }: BettingZoneProps) {
             setApiCallInProgress(false);
         }
     }, [isApiCallInProgress, bettingLevel])
-    const handleAllIn = async () => {
+    const handleAllIn = () => {
         if (!isAllIn) {
             if (userBalance > 0) {
+                if (!endGame) {
+                    dispatch(subtractCoins(userBalance));
+                }
                 dispatch(updateSpecificBetMoneyCoin({
                     name: betMoneyItem.name,
                     coin: userBalance
                 }));
 
-                if (!endGame) {
-                    await updateUserCoin(currentUser.id, userBalance * -1)
-                    dispatch(subtractCoins(userBalance));
-                }
             } else {
                 toast.error("Không đủ số dư để tất tay rồi :))))", {
                     style: {
@@ -124,24 +121,13 @@ function BettingZone({ item }: BettingZoneProps) {
                 return;
             }
         } else {
-            if (!endGame) {
-                await updateUserCoin(currentUser.id, betMoneyItem.coin)
-                dispatch(addCoins(betMoneyItem.coin));
-            }
-            dispatch(updateSpecificBetMoneyCoin({
-                name: betMoneyItem.name,
-                coin: 0
-            }));
-
-
+            clearBettingStakes()
         }
-
         setIsAllIn(!isAllIn);
     };
-    const clearBettingStakes = async (e: any) => {
-        e.stopPropagation()
+    const clearBettingStakes = (e?: any) => {
+        e && e?.stopPropagation()
         if (!endGame) {
-            await updateUserCoin(currentUser.id, betMoneyItem.coin)
             dispatch(addCoins(betMoneyItem.coin))
         }
         dispatch(updateSpecificBetMoneyCoin({
@@ -185,10 +171,10 @@ function BettingZone({ item }: BettingZoneProps) {
                     <div className='flex items-center gap-x-4 justify-center text-gray-900 w-full'>
                         <button className='px-4 py-2 rounded-md button-3d disabled:bg-[#aa8136] flex-1 disabled:cursor-not-allowed flex justify-center btn-minus-plus' onClick={decreaseBettingStakes} disabled={endGame}><FaMinus className='text-xs md:text-base' /></button>
                         <p className='flex-1'>{convertLargeNumberFormat(betMoneyItem?.coin)}</p>
-                        <button className='px-4 py-2 rounded-md button-3d flex-1 disabled:bg-[#aa8136] disabled:cursor-not-allowed flex justify-center btn-minus-plus' onClick={throttleIncreaseStake} disabled={endGame}><FaPlus className='text-xs md:text-base' /></button>
+                        <button className='px-4 py-2 rounded-md button-3d flex-1 disabled:bg-[#aa8136] disabled:cursor-not-allowed flex justify-center btn-minus-plus' onClick={increaseBettingStakes} disabled={endGame}><FaPlus className='text-xs md:text-base' /></button>
                     </div>
                     <div className='flex items-center gap-x-4 justify-center mt-2 text-gray-900 w-full'>
-                        <button id="rollDice" className='p-1 md:p-2 rounded-md button-3d flex-1 disabled:bg-[#aa8136] disabled:cursor-not-allowed flex justify-center text-sm button-3d uppercase' onClick={handleAllIn} disabled={endGame}>Tất tay</button>
+                        <button id="rollDice" className='p-1 md:p-2 rounded-md button-3d flex-1 disabled:bg-[#5a0909] disabled:cursor-not-allowed flex justify-center text-sm button-3d uppercase' onClick={handleAllIn} disabled={endGame}>Tất tay</button>
                     </div>
 
 

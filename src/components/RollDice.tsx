@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { forwardRef, useRef, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { bettedSelector, endGameSelector, openSelector, setEndGame, setOpen, setRolled, updateAfterRollDices } from '../redux/reducers/game';
+import { addCoins } from '../redux/reducers/player';
 import { countOccurrencesAndCompare } from '../utils';
 import Bowl from './Bowl';
 import Dice from './Dice';
@@ -10,7 +11,7 @@ interface RollDiceProps {
     newGame: () => void;
 }
 const RollDice = forwardRef<HTMLImageElement, RollDiceProps>((props, ref) => {
-    const [dices, setDices] = useState([0, 1, 2])
+    const [dices, setDices] = useState([Math.floor(Math.random() * 6), Math.floor(Math.random() * 6), Math.floor(Math.random() * 6)])
     const audioRef = useRef(null);
     const dishRef = useRef<HTMLImageElement>(null)
     const dispatch = useDispatch();
@@ -82,7 +83,7 @@ const RollDice = forwardRef<HTMLImageElement, RollDiceProps>((props, ref) => {
                 Your browser does not support the audio element.
             </audio>
             <div className="relative roll-dice-content">
-                <Bowl ref={ref} transparent={false} />
+                <Bowl ref={ref} transparent={true} />
                 <Dish ref={dishRef} />
                 {dices.map((dice, index) => <Dice index={index + 1} diceKey={dice} />)}
             </div>

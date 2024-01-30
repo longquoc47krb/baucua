@@ -4,7 +4,7 @@ import { LegacyRef, forwardRef } from 'react';
 
 const Dish = (props, ref: LegacyRef<HTMLImageElement> | any) => {
     return (
-        <img ref={ref} src="/images/dish.png" className={`dish circle`} />
+        <img ref={ref} src="/images/plate.png" className={`dish circle`} />
     )
 }
 

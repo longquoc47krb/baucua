@@ -153,7 +153,7 @@ function GameScreen() {
                 reverseOrder={true} />
             <div className='p-2 h-screen relative game-screen'
                 style={{
-                    backgroundImage: `url('/images/background.jpg')`,
+                    backgroundImage: `url('/images/background.jpeg')`,
                     backgroundPosition: "center",
                     backgroundSize: "cover",
                     backgroundRepeat: "no-repeat",

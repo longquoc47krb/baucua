@@ -69,16 +69,16 @@ const UserProfileComponent = ({ user, coin, stats }: UserProfileProps) => {
                 </div>
                 {renderDiffAmount()}
             </div>
-            <div className="flex items-center gap-x-4">
-                <div className="flex items-center gap-x-2">
+            <div className="flex items-center gap-x-4 text-xs md:text-base">
+                <div className="flex items-center gap-x-1">
                     <span>✅</span>
                     <span>Thắng: {stats?.wonCount}</span>
                 </div>
-                <div className="flex items-center gap-x-2">
+                <div className="flex items-center gap-x-1">
                     <span>➖</span>
                     <span>Hoà: {stats?.drawCount}</span>
                 </div>
-                <div className="flex items-center gap-x-2">
+                <div className="flex items-center gap-x-1">
                     <span>❌</span>
                     <span>Thua: {stats?.lossCount}</span>
                 </div>

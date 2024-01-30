@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HiMiniTrophy } from 'react-icons/hi2';
-import { convertLargeNumberFormat, formatNumberWithCommas } from '../utils';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { IState, IUser } from '../common/interface';
-import { useEffect } from 'react';
+import { formatNumberWithCommas } from '../utils';
+import Pagination from './Pagination';
 
 function Table({ data }: { data: any }) {
     const currentUser = useSelector((state: IState) => state.player.user)
@@ -17,11 +17,24 @@ function Table({ data }: { data: any }) {
         }
     }
     useEffect(() => {
-        const userIndex = data.findIndex((user: IUser) => user.name === currentUser.name);
+        const userIndex = currentPageData.findIndex((user: IUser) => user.name === currentUser.name);
         console.log({ userIndex, data, currentUser })
         const row = document.getElementById(`ranking-row-${userIndex}`)
         row?.classList.add("highlight-row");
     }, [currentUser, data])
+
+    //  Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+    // Calculate the index range to display for the current page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentPageData = data.slice(startIndex, endIndex);
+
+    // Function to handle page change
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
     return (
         <div className="table-container mx-auto overflow-x-auto rounded-md">
 
@@ -37,7 +50,7 @@ function Table({ data }: { data: any }) {
                 </thead>
                 <tbody>
                     {
-                        data.slice(0, 10).map((item: any, index: number) => <tr id={`ranking-row-${index}`} className='ranking-row'>
+                        currentPageData.map((item: any, index: number) => <tr id={`ranking-row-${index}`} className='ranking-row'>
                             <td className="py-2 px-4 whitespace-nowrap flex justify-center items-center">{renderRankNo(index)}</td>
                             <td className="py-2 px-4 whitespace-nowrap">{item.name}</td>
                             <td className="py-2 px-4 whitespace-nowrap">{item.wonRate}%</td>
@@ -48,7 +61,12 @@ function Table({ data }: { data: any }) {
 
                 </tbody>
             </table>
-
+            {data.length > 10 && <Pagination
+                totalItems={data.length}
+                itemsPerPage={itemsPerPage}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+            />}
         </div>
     )
 }

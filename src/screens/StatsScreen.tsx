@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { chain, countBy, filter } from "lodash";
-import { useEffect, useState, useMemo } from "react";
-import { Toaster } from "react-hot-toast";
+import { useEffect, useMemo, useState } from "react";
 import { getGameHistory, getUserList } from "../api/firebaseApi";
-import { IGameHistory, IRankingDataItem, IStats, IUser, IWinStreak } from '../common/interface';
+import { IRankingDataItem, IStats, IWinStreak } from '../common/interface';
 import FloatMenu from "../components/FloatMenu";
 import Table from "../components/Table";
 import UserProfileComponent from "../components/UserProfileComponent";
@@ -107,17 +106,15 @@ function StatsScreen() {
     return (
         <div>
             {/* <audio ref={incorrectRef} className="hidden" /> */}
-            <Toaster position="bottom-center"
-                reverseOrder={true} />
             <div className='flex flex-col items-center pt-6 p-2 h-screen relative overflow-hidden'
                 style={{
-                    backgroundColor: "#d50505",
+                    backgroundColor: "#ab0a0a",
                     backgroundPosition: "center",
                     backgroundSize: "cover",
                     backgroundRepeat: "no-repeat",
                 }}
             >
-                <img src="/images/pattern.jpg" className='absolute h-full w-full object-cover top-0 left-0 opacity-15' />
+                <img src="/images/pattern.jpg" className='absolute h-full w-full object-cover top-0 left-0 opacity-5' />
                 <FloatMenu />
                 <div className="flex items-start gap-x-8 relative px-4 py-2 rounded-lg leading-8 w-full pr-[10vw] stats-container">
                     <UserProfileComponent user={currentUser} coin={currentUser?.coin} stats={stats} />

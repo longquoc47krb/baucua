@@ -27,10 +27,10 @@ function PetalFalling() {
         }
     }
     animatePetals();
-    const petalsClass = classNames("bg-red-500 w-screen", isSmallDevice ? "hidden" : "")
+    const petalsClass = classNames("w-screen", isSmallDevice ? "hidden" : "")
     return (
         <div id="petals-container" className={petalsClass}>
-            {[...Array(25)].map(() => <div className="petal"></div>)}
+            {[...Array(20)].map(() => <div className="petal"></div>)}
         </div>
     )
 }

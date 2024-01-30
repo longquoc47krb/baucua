@@ -81,7 +81,7 @@ const RegisterScreen = () => {
     };
     return (
         <div className="flex items-center justify-center h-screen" style={{
-            backgroundImage: `url('/images/background.jpg')`,
+            backgroundImage: `url('/images/login-background.jpg')`,
             backgroundPosition: "center",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",

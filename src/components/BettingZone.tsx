@@ -6,7 +6,6 @@ import { toast } from 'react-hot-toast';
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { FaTrashCan } from "react-icons/fa6";
 import { useDispatch, useSelector } from 'react-redux';
-import { updateUserCoin } from '../api/firebaseApi';
 import { useAuthContext } from '../config/context/useAuthContext';
 import { calculateTotalBetMoney, decreaseBetMoneyCoin, endGameSelector, increaseBetMoneyCoin, rolledSelector, setBetted, totalBetMoneySelector, updateSpecificBetMoneyCoin } from '../redux/reducers/game';
 import { addCoins, coinSelector, subtractCoins } from '../redux/reducers/player';

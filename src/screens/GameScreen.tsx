@@ -138,10 +138,13 @@ function GameScreen() {
     }
     // Update user coin in db
     useEffect(() => {
-        const updateCoin = async () => {
-            diffAmountCalculateCompleted && await updateUserCoin(currentUser.id, diffAmount)
+        if (diffAmountCalculateCompleted) {
+            const updateCoin = async () => {
+                await updateUserCoin(currentUser.id, diffAmount)
+            }
+            updateCoin()
         }
-        updateCoin()
+
     }, [diffAmountCalculateCompleted])
     return (
         <div>

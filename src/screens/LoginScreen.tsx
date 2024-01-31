@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { collection, getDocs, query, where } from 'firebase/firestore';
 import sign from 'jwt-encode';
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { database } from '../config/firebase';
-import { setUser } from '../redux/reducers/player';
-import { lowercaseAndRemoveWhitespace } from '../utils';
 import { loginAccount } from '../api/firebaseApi';
+import { setUser } from '../redux/reducers/player';
 const LoginScreen = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -60,6 +57,7 @@ const LoginScreen = () => {
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
         }}>
+
             <Toaster position="bottom-center"
                 reverseOrder={true} />
             <div className="shadow-md rounded-md w-96 overflow-hidden relative bg-red-700 min-w-[40vw] auth-container">

@@ -17,6 +17,7 @@ import RegisterScreen from "./RegisterScreen";
 import StatsScreen from "./StatsScreen";
 import { useSelector } from "react-redux";
 import { currentUserSelector } from "../redux/reducers/player";
+import MobileUnavailable from "./MobileUnavailable";
 
 const Layout = () => {
     const token = useSelector(currentUserSelector);
@@ -47,6 +48,7 @@ const Layout = () => {
                             <Route path={"/stats"} element={<StatsScreen />} />
                         </Route>
                     </Routes>
+                    <MobileUnavailable />
                     <MusicPlayer playlistData={playlistData} isSmallDevice={isSmallDevice} />
                     <PetalFalling />
                 </BrowserRouter>
